@@ -25,6 +25,9 @@ public interface ProxyHandler {
     boolean isClient();
     void setClient();
     boolean moreWriteableData(ByteBuffer byteBuffer);
+    boolean transformBufferDone();
+    void resetHandler();
+
 
     boolean analizeData();
     void transformData();

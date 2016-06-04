@@ -18,7 +18,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private boolean terminated;
     private boolean isClient;
 
-    private static final int BUFFER_SIZE = 1;
+    private static final int BUFFER_SIZE = 1024;
 
     public ConcurrentProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -65,6 +65,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         }else{
             return writeQueue.size() != 0;
         }
+    }
+
+    public Object getOtherHandler(){
+        return otherKey.attachment();
     }
 
     public boolean isClient(){
@@ -132,7 +136,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     public void transferData() {
 
         ByteBuffer otherWriteBuffer = ByteBuffer.allocate(stringBuffer.length());
-        StringBuffer aux = new StringBuffer();
 
         otherWriteBuffer.put(stringBuffer.toString().getBytes());
 

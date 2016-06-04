@@ -96,9 +96,17 @@ public class Worker implements Runnable{
 
         if(bytesRead>0){
             handler.appendBuffer();
+
             if(handler.analizeData()){
+               // handler.appendBuffer();
+                if(handler.transformBufferDone()){
+                    handler.resetHandler();
+                    handler.transferData();
+                    serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                }
+            }else{
+                handler.resetHandler();
                 handler.transferData();
-                handler.transformData();
                 serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
             }
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
