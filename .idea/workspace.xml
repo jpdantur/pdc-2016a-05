@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="Parser Initial Commit (and changed sdk to Java 8)">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/commons-codec-1.10.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/javaxt-core.jar" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/commons_codec_1_10.xml" afterPath="$PROJECT_DIR$/.idea/libraries/commons_codec_commons_codec_1_10.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProtosTpe.iml" afterPath="$PROJECT_DIR$/ProtosTpe.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopParser.java" afterPath="$PROJECT_DIR$/src/pop3/PopParser.java" />
     </list>
     <ignored path="ProtosTpe.iws" />
@@ -57,8 +52,8 @@
       <file leaf-file-name="PopParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1905">
-              <caret line="127" column="48" selection-start-line="127" selection-start-column="48" selection-end-line="127" selection-end-column="48" />
+            <state relative-caret-position="195">
+              <caret line="85" column="31" selection-start-line="85" selection-start-column="31" selection-end-line="85" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -803,7 +798,7 @@
       <workItem from="1465029810986" duration="1600000" />
       <workItem from="1465076480883" duration="2614000" />
       <workItem from="1465085849715" duration="4073000" />
-      <workItem from="1465157730751" duration="4847000" />
+      <workItem from="1465157730751" duration="4971000" />
     </task>
     <task id="LOCAL-00001" summary="Parser Initial Commit (and changed sdk to Java 8)">
       <created>1465078877954</created>
@@ -812,11 +807,18 @@
       <option name="project" value="LOCAL" />
       <updated>1465078877954</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Parser Beta Edition (not tried)">
+      <created>1465163081153</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1465163081153</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42336000" />
+    <option name="totallyTimeSpent" value="42460000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="709" extended-state="6" />
@@ -892,7 +894,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Image inverter &amp; additional libraries" />
     <MESSAGE value="Parser Initial Commit (and changed sdk to Java 8)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Parser Initial Commit (and changed sdk to Java 8)" />
+    <MESSAGE value="Parser Beta Edition (not tried)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser Beta Edition (not tried)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1178,8 +1181,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1905">
-          <caret line="127" column="48" selection-start-line="127" selection-start-column="48" selection-end-line="127" selection-end-column="48" />
+        <state relative-caret-position="195">
+          <caret line="85" column="31" selection-start-line="85" selection-start-column="31" selection-end-line="85" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -83,6 +83,7 @@ public class PopParser {
             inImage = false;
             stringBuffer.append(processImage());
             stringBuffer.append("\r\n"); //este capaz sobra
+            image.setLength(0);
         }
         stringBuffer.append(curLine);
     }
