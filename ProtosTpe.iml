@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="javaxt-core" level="project" />
+    <orderEntry type="library" name="commons-codec:commons-codec:1.10" level="project" />
   </component>
 </module>
