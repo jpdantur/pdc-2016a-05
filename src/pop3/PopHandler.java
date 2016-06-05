@@ -84,7 +84,7 @@ public class PopHandler extends ConcurrentProxyHandler {
             System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }
-        this.halfEnd = this.getStringBuffer().substring(length-2, length).equals("\r\n");
+        this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
         /*
         System.out.println("*** " + this.getStringBuffer().substring(length-2, length));
         System.out.println("++++++++++++++++++");
