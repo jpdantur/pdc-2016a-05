@@ -9,8 +9,10 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,9 +25,10 @@ public class ProxyServer implements ServerTools {
     private final ServerSocketChannel serverSocketChannel;
     private static ExecutorService workerPool;
     private static Queue<KeyModifier> keyModifierQueue;
+    private static Set<SelectionKey> otherKeys;
     private HandlerBuilder handlerBuilder;
 
-    private static final int WORKER_POOL = 100;
+    private static final int WORKER_POOL = 2;
     private static final long TIMEOUT = 10;
 
     public ProxyServer(int port, HandlerBuilder handlerBuilder) throws IOException {
@@ -38,6 +41,7 @@ public class ProxyServer implements ServerTools {
         workerPool = Executors.newFixedThreadPool(WORKER_POOL);
         keyModifierQueue = new ConcurrentLinkedQueue<>();
 
+        otherKeys = new HashSet<>();
         this.handlerBuilder = handlerBuilder;
     }
 
@@ -53,20 +57,38 @@ public class ProxyServer implements ServerTools {
                 Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
 
                 while (keyIterator.hasNext()) {
+
                     SelectionKey key = keyIterator.next();
                     keyIterator.remove();
 
+                    if(otherKeys.contains(key)){
+                        continue;
+                    }
+
                     if(!key.isValid()) continue;
+
                     key.interestOps(0);
 
-                    //workerPool.execute(new Worker(key, this));
+                    int otherInterest = 0;
 
-                    Worker worker = new Worker(key, this);
-                    worker.run();
+                    if(key.isReadable() || key.isWritable()) {
+                        SelectionKey otherKey = ((ProxyHandler) key.attachment()).getOtherKey();
+                        if(otherKey!= null && otherKey.isValid()){
+                            otherInterest = otherKey.interestOps();
+                            otherKey.interestOps(0);
+                            otherKeys.add(otherKey);
+                        }
+                    }
+
+                    workerPool.execute(new Worker(key, this, otherInterest));
+
+                    //Worker worker = new Worker(key, this);
+                    //worker.run();
 
                     updateKeys();
 
                 }
+                otherKeys.clear();
             }
         }catch (Exception e){
             e.printStackTrace();

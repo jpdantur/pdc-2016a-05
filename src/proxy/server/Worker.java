@@ -17,10 +17,12 @@ public class Worker implements Runnable{
 
     private SelectionKey key;
     private ServerTools serverTools;
+    private int otherInterest;
 
-    public Worker(SelectionKey key, ServerTools serverTools){
+    public Worker(SelectionKey key, ServerTools serverTools, int otherInterest){
         this.key = key;
         this.serverTools = serverTools;
+        this.otherInterest = otherInterest;
     }
 
 
@@ -41,6 +43,7 @@ public class Worker implements Runnable{
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("ERROR EN LA KEY : " + this.key.toString());
         }
         System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
@@ -91,24 +94,28 @@ public class Worker implements Runnable{
 
         if(bytesRead == 0){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
+            serverTools.queue(new QueuedKey(handler.getOtherKey(), otherInterest));
             return;
         }
 
         if(bytesRead>0){
             handler.appendBuffer();
-
+            int auxInterest = otherInterest;
             if(handler.analizeData()){
                // handler.appendBuffer();
                 if(handler.transformBufferDone()){
                     handler.resetHandler();
                     handler.transferData();
-                    serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                    //serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                    auxInterest = SelectionKey.OP_WRITE;
                 }
             }else{
                 handler.resetHandler();
                 handler.transferData();
-                serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                //serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                auxInterest = SelectionKey.OP_WRITE;
             }
+            serverTools.queue(new QueuedKey(handler.getOtherKey(), auxInterest));
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
         }else{
             //if(handler.hasWrittenData()){
@@ -160,6 +167,8 @@ public class Worker implements Runnable{
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
         }
+
+        serverTools.queue(new QueuedKey(handler.getOtherKey(), otherInterest));
 
         handler.doneWriting();
     }
