@@ -41,51 +41,37 @@ public class PopParser {
                 temp=new StringBuilder();
             }
         }
-        if (lineQueue.isEmpty())
-            return;  //lo que viene ahora podria hacer que lo haga con un while hasta que se vacie la cola
-        String curLine = lineQueue.poll().toString();
         stringBuffer.setLength(0);
-        if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady)
-        {
-            inSubject=true;
-            curLine = "Subject:"+processSubject(curLine.substring(8))+"\r\n";
+        while (!lineQueue.isEmpty()) {//lo que viene ahora podria hacer que lo haga con un while hasta que se vacie la cola
+            String curLine = lineQueue.poll().toString();
+            //stringBuffer.setLength(0);
+            if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady) {
+                inSubject = true;
+                curLine = "Subject:" + processSubject(curLine.substring(8)) + "\r\n";
+            } else if (inSubject && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
+                curLine = processSubject(curLine) + "\r\n";
+            } else if (inSubject) {
+                inSubject = false;
+                subjectReady = true;
+            } else if (curLine.equals("\r\n") && !inImageHeader) {
+                inBody = true;
+                subjectReady = true;
+            } else if (isImageHeader(curLine) && !inImageHeader && inBody) {
+                inImageHeader = true;
+            } else if (inImageHeader && curLine.equals("\r\n")) {
+                inImage = true;
+                inImageHeader = false;
+            } else if (inImage && !curLine.startsWith("--")) {
+                image.append(curLine);
+                curLine = "";
+            } else if (inImage && curLine.startsWith("--")) {
+                inImage = false;
+                stringBuffer.append(processImage());
+                stringBuffer.append("\r\n"); //este capaz sobra
+                image.setLength(0);
+            }
+            stringBuffer.append(curLine);
         }
-        else if (inSubject && (curLine.startsWith(" ") || curLine.startsWith("\t")))
-        {
-            curLine = processSubject(curLine)+"\r\n";
-        }
-        else if (inSubject)
-        {
-            inSubject = false;
-            subjectReady = true;
-        }
-        else if (curLine.equals("\r\n") && !inImageHeader)
-        {
-            inBody = true;
-            subjectReady = true;
-        }
-        else if (isImageHeader(curLine) && !inImageHeader && inBody)
-        {
-            inImageHeader=true;
-        }
-        else if (inImageHeader && curLine.equals("\r\n"))
-        {
-            inImage=true;
-            inImageHeader = false;
-        }
-        else if (inImage && !curLine.startsWith("--"))
-        {
-            image.append(curLine);
-            curLine="";
-        }
-        else if (inImage && curLine.startsWith("--"))
-        {
-            inImage = false;
-            stringBuffer.append(processImage());
-            stringBuffer.append("\r\n"); //este capaz sobra
-            image.setLength(0);
-        }
-        stringBuffer.append(curLine);
     }
 
     private boolean isImageHeader(String curLine) {

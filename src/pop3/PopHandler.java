@@ -63,7 +63,8 @@ public class PopHandler extends ConcurrentProxyHandler {
         //Si ya tengo todo para modificar, lo hago, y return true
         //Si no, return false
         //this.type = TYPE.UNKOWN;
-        popParser.parseData(this.getStringBuffer());
+        System.out.println("Aca empieza");
+        transformData();
         return true;
     }
 
