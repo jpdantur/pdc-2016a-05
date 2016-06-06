@@ -8,6 +8,8 @@ import javax.xml.bind.Unmarshaller;
 /**
  * Created by matias on 6/5/16.
  */
+
+//link de refenrencia: http://www.mkyong.com/java/jaxb-hello-world-example/
 public class JAXBParser {
     public static Properties getProperties() {
         Properties prop = null;
