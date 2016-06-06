@@ -70,9 +70,4 @@ public class Manager implements Runnable{
 
     }
 
-//    @Override
-//    public void run() {
-//        this.cajera.procesarCompra(this.cliente, this.initialTime);
-//    }
-
 }
