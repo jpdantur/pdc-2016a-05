@@ -13,6 +13,7 @@ public class Properties {
     int serverport;
     int pop3Port;
     List<AdminProperties> adminProperties;
+    String servername;
     boolean leet;
 
     @XmlElement(name = "BufferSize")
@@ -39,6 +40,13 @@ public class Properties {
     public void setLeet(boolean leet) {
         this.leet = leet;
     }
+
+    @XmlElement(name = "Servername")
+    public void setServername(String Servername) {
+        this.servername = servername;
+    }
+
+    public String getServername() { return this.servername; }
 
     public boolean getLeet() { return this.leet; }
 

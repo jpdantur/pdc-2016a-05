@@ -63,7 +63,7 @@ public class ProxyServer implements ServerTools {
 
                     //workerPool.execute(new Worker(key, this));
 
-                    Worker worker = new Worker(key, this);
+                    Worker worker = new Worker(key, this, config);
                     worker.run();
 
                     updateKeys();

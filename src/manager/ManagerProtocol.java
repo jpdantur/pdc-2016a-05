@@ -137,7 +137,7 @@ public class ManagerProtocol implements TCPProtocol {
 
         if(input.toLowerCase().equals("stat\n"))
             if(isLogin){
-                // return stats
+                return OKresp+getStat();
             }
             else
                 return ERRresp+" Login first";
@@ -211,5 +211,10 @@ public class ManagerProtocol implements TCPProtocol {
             return 0;
         }
         return 1;
+    }
+
+    private String getStat() {
+        return "BytesRecvd: " + config.getBytesRcvd() + "\n" +
+                "BytesSend: " + config.getBytesSend() + "\n";
     }
 }

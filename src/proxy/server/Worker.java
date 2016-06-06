@@ -17,12 +17,13 @@ public class Worker implements Runnable{
 
     private SelectionKey key;
     private ServerTools serverTools;
+    private Configuration config;
 
-    public Worker(SelectionKey key, ServerTools serverTools){
+    public Worker(SelectionKey key, ServerTools serverTools, Configuration c){
         this.key = key;
         this.serverTools = serverTools;
+        this.config = c;
     }
-
 
     @Override
     public void run() {
@@ -89,6 +90,8 @@ public class Worker implements Runnable{
 
         long bytesRead = channel.read(buffer);
 
+        config.addBytesRcvd(bytesRead);
+
         if(bytesRead == 0){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             return;
@@ -146,6 +149,7 @@ public class Worker implements Runnable{
         }
 
         buffer.flip();
+        config.addBytesRcvd(buffer.position());
         channel.write(buffer);
 
         if(handler.moreWriteableData(buffer)){
