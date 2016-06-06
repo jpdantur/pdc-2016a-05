@@ -1,0 +1,13 @@
+<Properties>
+    <BufferSize>2</BufferSize>
+    <ServerPort>7070</ServerPort>
+    <pop3-port>110</pop3-port>
+    <Admin>
+        <user>admin.com</user>
+        <pass>1234</pass>
+        <port>9999</port>
+    </Admin>
+    <WellcomeMessage>+OK PDC02-Proxy ready.\r\n</WellcomeMessage>
+    <GoodByeMessage>+OK PDC02-Proxy says goodbye.\r\n</GoodByeMessage>
+    <L33t>false</L33t>
+</Properties>

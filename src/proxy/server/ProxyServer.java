@@ -48,6 +48,7 @@ public class ProxyServer implements ServerTools {
 
                 if(selector.select(TIMEOUT) == 0){
                     updateKeys();
+//                    System.out.print(".");
                     continue;
                 }
                 Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
