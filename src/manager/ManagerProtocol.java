@@ -1,6 +1,7 @@
 package manager;
 
 import proxy.utils.AdminProperties;
+import proxy.utils.Configuration;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,6 +19,7 @@ public class ManagerProtocol implements TCPProtocol {
     private ByteBuffer readBuffer;
     private StringBuffer stringBuffer;
     private AdminProperties admin;
+    private Configuration config;
 
     private static String OKresp = "+OK\n";
     private static String ERRresp = "-ERR";
@@ -32,6 +34,7 @@ public class ManagerProtocol implements TCPProtocol {
         this.readBuffer = ByteBuffer.allocate(this.bufSize);
         this.stringBuffer = new StringBuffer();
         this.admin = admin;
+        this.config = Configuration.getInstance();
     }
 
     public void handleAccept(SelectionKey key) throws IOException {
@@ -198,9 +201,13 @@ public class ManagerProtocol implements TCPProtocol {
         String value = input.toLowerCase();
         if(value.equals("yes")){
             this.leet = true;
+            this.config.getProp().setLeet(this.leet);
+            System.out.println(this.config.getProp().getLeet());
             return 0;
         } else if(value.equals("no")){
             this.leet = false;
+            this.config.getProp().setLeet(this.leet);
+            System.out.println(this.config.getProp().getLeet());
             return 0;
         }
         return 1;

@@ -24,14 +24,16 @@ public class ProxyServer implements ServerTools {
     private static ExecutorService workerPool;
     private static Queue<KeyModifier> keyModifierQueue;
     private HandlerBuilder handlerBuilder;
+    private  static Configuration config;
 
     private static final int WORKER_POOL = 100;
     private static final long TIMEOUT = 10;
 
-    public ProxyServer(int port, HandlerBuilder handlerBuilder) throws IOException {
+    public ProxyServer(Configuration c, HandlerBuilder handlerBuilder) throws IOException {
+        config = c;
         selector = Selector.open();
         serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(port));
+        serverSocketChannel.socket().bind(new InetSocketAddress(config.getProp().getServerport()));
         serverSocketChannel.configureBlocking(false);
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
@@ -48,7 +50,6 @@ public class ProxyServer implements ServerTools {
 
                 if(selector.select(TIMEOUT) == 0){
                     updateKeys();
-//                    System.out.print(".");
                     continue;
                 }
                 Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
