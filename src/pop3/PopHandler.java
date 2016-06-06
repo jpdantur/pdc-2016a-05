@@ -16,6 +16,7 @@ public class PopHandler extends ConcurrentProxyHandler {
 
     private static final int MAX_COMMAND_LENGTH = 255;
     private boolean halfEnd;
+    private PopParser popParser = new PopParser();
 
     public PopHandler() {
         super();
@@ -62,6 +63,8 @@ public class PopHandler extends ConcurrentProxyHandler {
         //Si ya tengo todo para modificar, lo hago, y return true
         //Si no, return false
         //this.type = TYPE.UNKOWN;
+        System.out.println("Aca empieza");
+        transformData();
         return true;
     }
 
@@ -81,7 +84,7 @@ public class PopHandler extends ConcurrentProxyHandler {
             System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }
-        this.halfEnd = this.getStringBuffer().substring(length-2, length).equals("\r\n");
+        this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
         /*
         System.out.println("*** " + this.getStringBuffer().substring(length-2, length));
         System.out.println("++++++++++++++++++");
@@ -134,7 +137,6 @@ public class PopHandler extends ConcurrentProxyHandler {
 
     @Override
     public void transformData() {
-        PopParser popParser = new PopParser();
         popParser.parseData(this.getStringBuffer());
     }
 }

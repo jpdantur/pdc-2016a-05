@@ -56,7 +56,7 @@ public class Worker implements Runnable{
         clientAndProxy.configureBlocking(false);
         proxyAndServer.configureBlocking(false);
 
-        proxyAndServer.connect(new InetSocketAddress("localhost", 110));
+        proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
 
         ProxyHandler handlerClient = serverTools.getNewHandler();
         ProxyHandler handlerServer = serverTools.getNewHandler();
