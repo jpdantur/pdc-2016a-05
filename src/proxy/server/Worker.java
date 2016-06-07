@@ -90,7 +90,7 @@ public class Worker implements Runnable{
 
         long bytesRead = channel.read(buffer);
 
-        config.addBytesRcvd(bytesRead);
+        config.addBytesTransferred(bytesRead);
 
         if(bytesRead == 0){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
@@ -147,9 +147,7 @@ public class Worker implements Runnable{
             }
             return;
         }
-        //buffer tiene list\n
         buffer.flip();
-        config.addBytesRcvd(buffer.position());
         channel.write(buffer);
 
         if(handler.moreWriteableData(buffer)){

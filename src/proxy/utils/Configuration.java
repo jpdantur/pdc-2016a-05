@@ -6,19 +6,16 @@ package proxy.utils;
 public class Configuration {
     private static Configuration instance = null;
     private static Properties prop;
-    private static long bytesSend;
-    private static long bytesRcvd;
+    private static long bytesTransferred;
 
     protected Configuration() {
         this.prop = JAXBParser.getProperties();
     }
     public static Configuration getInstance() {
-        bytesRcvd = 0;
-        bytesSend = 0;
+        bytesTransferred = 0;
         if(instance == null) {
             instance = new Configuration();
         }
-
         return instance;
     }
 
@@ -26,19 +23,12 @@ public class Configuration {
         return this.prop;
     }
 
-    public void addBytesRcvd(long bytes) {
-        bytesRcvd += bytes;
+    public void addBytesTransferred(long bytes) {
+        bytesTransferred += bytes;
     }
 
-    public void addBytesSend(long bytes) {
-        bytesSend += bytes;
+    public long getBytesTransferred() {
+        return bytesTransferred;
     }
 
-    public long getBytesSend() {
-        return bytesSend;
-    }
-
-    public long getBytesRcvd() {
-        return bytesRcvd;
-    }
 }

@@ -90,6 +90,12 @@ public class ManagerProtocol implements TCPProtocol {
             SocketChannel clntChan = (SocketChannel) key.channel();
             buf = ByteBuffer.wrap(sendResp.getBytes());
             clntChan.write(buf);
+
+            if(sendResp.contains("QUIT")) {
+                clntChan.close();
+                return;
+            }
+
             if (!buf.hasRemaining()) { // Buffer completely written?
                 // Nothing left, so no longer interested in writes
                 key.interestOps(SelectionKey.OP_READ);
@@ -221,8 +227,7 @@ public class ManagerProtocol implements TCPProtocol {
                 "Leet: " + config.getProp().getLeet() + "\n" +
                 "Manager Port: " + config.getProp().getAdminProperties().get(0).getPort() + "\n" +
                 "Server Port: " + config.getProp().getServerport() + "\n" +
-                "BytesRecvd: " + config.getBytesRcvd() + "bytes\n" +
-                "BytesSend: " + config.getBytesSend() + "bytes\n";
+                "BytesTransferred: " + config.getBytesTransferred() + "bytes\n";
     }
 
     private String getQuit() {
