@@ -7,12 +7,14 @@ public class Configuration {
     private static Configuration instance = null;
     private static Properties prop;
     private static long bytesTransferred;
+    private static long accesses;
 
     protected Configuration() {
         this.prop = JAXBParser.getProperties();
     }
     public static Configuration getInstance() {
         bytesTransferred = 0;
+        accesses = 0;
         if(instance == null) {
             instance = new Configuration();
         }
@@ -31,4 +33,9 @@ public class Configuration {
         return bytesTransferred;
     }
 
+    public void addAccess() {
+        accesses += 1;
+    }
+
+    public long getAccesses() { return accesses; }
 }

@@ -61,8 +61,10 @@ public class Worker implements Runnable{
 
         ProxyHandler handlerClient = serverTools.getNewHandler();
         ProxyHandler handlerServer = serverTools.getNewHandler();
-
         handlerClient.setClient();
+
+        //access BIEN COLOCADO ACA :V
+        config.addAccess();
 
         serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
@@ -70,6 +72,7 @@ public class Worker implements Runnable{
 
     private void handleConnect(SelectionKey key) throws IOException{
         System.out.println("---Handling Connect---");
+
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if(socketChannel.finishConnect()){
@@ -90,12 +93,13 @@ public class Worker implements Runnable{
 
         long bytesRead = channel.read(buffer);
 
-        config.addBytesTransferred(bytesRead);
-
         if(bytesRead == 0){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             return;
         }
+
+        config.addAccess();
+        System.out.println("AGREGO access en HANDLEREAD.");
 
         if(bytesRead>0){
             handler.appendBuffer();
@@ -148,7 +152,9 @@ public class Worker implements Runnable{
             return;
         }
         buffer.flip();
-        channel.write(buffer);
+        long bytesWritten = channel.write(buffer);
+
+        config.addBytesTransferred(bytesWritten);
 
         if(handler.moreWriteableData(buffer)){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));

@@ -23,7 +23,8 @@ public class ManagerProtocol implements TCPProtocol {
 
     private static String OKresp = "+OK\n";
     private static String ERRresp = "-ERR";
-    private static String login = "+Login in\n";
+    private static String login = "+Logged in\n";
+    private boolean showWellcomeMsg = true;
     private boolean isLogin = false;
     private boolean leet = false;
     private String adminPass;
@@ -42,7 +43,8 @@ public class ManagerProtocol implements TCPProtocol {
         clntChan.configureBlocking(false); // Must be nonblocking to register
         // Register the selector with new channel for read and attach byte
         // buffer
-        clntChan.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(bufSize));
+        stringBuffer.append("+OK HELLO USER\n");
+        clntChan.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(bufSize));
     }
 
     public void handleRead(SelectionKey key) throws IOException {
@@ -128,18 +130,14 @@ public class ManagerProtocol implements TCPProtocol {
         return this.adminPass;
     }
 
-    private String getHelp() {
-        return "COMMANDS\n" +
-                " USER\n" +
-                " PASS\n" +
-                " L33T\n" +
-                " BUFFERSIZE\n" +
-                " STAT\n";
-    }
-
     private String getResponde(String input) {
+        if(showWellcomeMsg) {
+            showWellcomeMsg = false;
+            return OKresp + input;
+        }
+
         if(input.toLowerCase().equals("quit\n"))
-            return OKresp+getQuit();
+            return getQuit();
 
         if(input.toLowerCase().equals("help\n"))
             return OKresp+getHelp();
@@ -149,7 +147,7 @@ public class ManagerProtocol implements TCPProtocol {
                 return OKresp+getStat();
             }
             else
-                return ERRresp+" Login first";
+                return ERRresp+" Login first\n";
 
         String pattern = "([A-Za-z]+?)\\s";
         Pattern r = Pattern.compile(pattern);
@@ -227,10 +225,34 @@ public class ManagerProtocol implements TCPProtocol {
                 "Leet: " + config.getProp().getLeet() + "\n" +
                 "Manager Port: " + config.getProp().getAdminProperties().get(0).getPort() + "\n" +
                 "Server Port: " + config.getProp().getServerport() + "\n" +
-                "BytesTransferred: " + config.getBytesTransferred() + "bytes\n";
+//                "BytesTransferred: " + humanReadableByteCount(config.getBytesTransferred(), false) + "\n" +
+                "BytesTransferred: " + config.getBytesTransferred() + "\n" +
+                "Access: " + config.getAccesses() + "\n";
     }
 
     private String getQuit() {
         return "QUIT goodbye!\n";
+    }
+
+    private String getHelp() {
+        return "COMMANDS\n" +
+                " USER\n" +
+                " PASS\n" +
+                " LEET\n" +
+                " BUFFERSIZE\n" +
+                " STAT\n";
+    }
+
+//    private String Histogram() {
+//        return "algun histograma de todos los tipos de errores";
+//    }
+
+    //convtierte el tamano de los bytes en un formato leible
+    public static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }
