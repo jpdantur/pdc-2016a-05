@@ -147,7 +147,7 @@ public class Worker implements Runnable{
             }
             return;
         }
-
+        //buffer tiene list\n
         buffer.flip();
         config.addBytesRcvd(buffer.position());
         channel.write(buffer);

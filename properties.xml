@@ -1,5 +1,5 @@
 <Properties>
-    <BufferSize>2</BufferSize>
+    <BufferSize>1024</BufferSize>
     <ServerPort>7070</ServerPort>
     <pop3-port>110</pop3-port>
     <Servername>locahost</Servername>

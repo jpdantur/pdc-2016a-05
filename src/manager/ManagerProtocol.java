@@ -132,6 +132,9 @@ public class ManagerProtocol implements TCPProtocol {
     }
 
     private String getResponde(String input) {
+        if(input.toLowerCase().equals("quit\n"))
+            return OKresp+getQuit();
+
         if(input.toLowerCase().equals("help\n"))
             return OKresp+getHelp();
 
@@ -214,7 +217,15 @@ public class ManagerProtocol implements TCPProtocol {
     }
 
     private String getStat() {
-        return "BytesRecvd: " + config.getBytesRcvd() + "\n" +
-                "BytesSend: " + config.getBytesSend() + "\n";
+        return "Buffer size: " + config.getProp().getBuffersize()+"bytes\n" +
+                "Leet: " + config.getProp().getLeet() + "\n" +
+                "Manager Port: " + config.getProp().getAdminProperties().get(0).getPort() + "\n" +
+                "Server Port: " + config.getProp().getServerport() + "\n" +
+                "BytesRecvd: " + config.getBytesRcvd() + "bytes\n" +
+                "BytesSend: " + config.getBytesSend() + "bytes\n";
+    }
+
+    private String getQuit() {
+        return "QUIT goodbye!\n";
     }
 }
