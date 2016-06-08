@@ -1,5 +1,7 @@
 package manager;
 
+import main.Main;
+import org.apache.log4j.Logger;
 import proxy.utils.AdminProperties;
 import proxy.utils.Configuration;
 
@@ -21,7 +23,7 @@ public class ManagerProtocol implements TCPProtocol {
     private AdminProperties admin;
     private Configuration config;
 
-    private static String OKresp = "+OK\n";
+    private static String OKresp = "+OK ";
     private static String ERRresp = "-ERR";
     private static String login = "+Logged in\n";
     private boolean showWellcomeMsg = true;
@@ -29,6 +31,9 @@ public class ManagerProtocol implements TCPProtocol {
     private boolean leet = false;
     private String adminPass;
     private String adminUser;
+
+    private final static Logger logger = Logger.getLogger(ManagerProtocol.class);
+
 
     public ManagerProtocol(int bufSize, AdminProperties admin) {
         this.bufSize = bufSize;
@@ -43,7 +48,7 @@ public class ManagerProtocol implements TCPProtocol {
         clntChan.configureBlocking(false); // Must be nonblocking to register
         // Register the selector with new channel for read and attach byte
         // buffer
-        stringBuffer.append("+OK HELLO USER\n");
+        stringBuffer.append("HELLO USER\n");
         clntChan.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(bufSize));
     }
 
@@ -93,7 +98,8 @@ public class ManagerProtocol implements TCPProtocol {
             buf = ByteBuffer.wrap(sendResp.getBytes());
             clntChan.write(buf);
 
-            if(sendResp.contains("QUIT")) {
+            if(sendResp.contains("goodbye")) {
+                logger.info("Close manager.");
                 clntChan.close();
                 return;
             }
@@ -167,6 +173,7 @@ public class ManagerProtocol implements TCPProtocol {
                     setPass(input.replace(command+" ", ""));
                     this.isLogin = checkUserPassAdmin();
                     if(isLogin) {
+                        logger.info("Manager logged in.");
                         return login;
                     } else {
                         deleteUserPass();
@@ -176,7 +183,7 @@ public class ManagerProtocol implements TCPProtocol {
                     if(this.isLogin) {
                         int exit = setL33t(input.replace(command+" ", ""));
                         if(exit == 0) {
-                            return OKresp;
+                            return OKresp + "\n";
                         } else {
                             return ERRresp+" Input not valid.\n";
                         }
@@ -186,7 +193,7 @@ public class ManagerProtocol implements TCPProtocol {
                 default:
                     return ERRresp+" Command not valid.\n";
             }
-            return OKresp;
+            return OKresp +"\n";
         } else {
             return ERRresp+" Command not found.\n";
         }
@@ -224,14 +231,14 @@ public class ManagerProtocol implements TCPProtocol {
         return "Buffer size: " + config.getProp().getBuffersize()+"bytes\n" +
                 "Leet: " + config.getProp().getLeet() + "\n" +
                 "Manager Port: " + config.getProp().getAdminProperties().get(0).getPort() + "\n" +
-                "Server Port: " + config.getProp().getServerport() + "\n" +
-//                "BytesTransferred: " + humanReadableByteCount(config.getBytesTransferred(), false) + "\n" +
-                "BytesTransferred: " + config.getBytesTransferred() + "\n" +
+                "Proxy Port: " + config.getProp().getServerport() + "\n" +
+                "BytesTransferred: " + humanReadableByteCount(config.getBytesTransferred(), false) + "\n" +
+//                "BytesTransferred: " + config.getBytesTransferred() + "\n" +
                 "Access: " + config.getAccesses() + "\n";
     }
 
     private String getQuit() {
-        return "QUIT goodbye!\n";
+        return OKresp + "goodbye!\n";
     }
 
     private String getHelp() {

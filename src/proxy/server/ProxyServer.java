@@ -61,10 +61,10 @@ public class ProxyServer implements ServerTools {
                     if(!key.isValid()) continue;
                     key.interestOps(0);
 
-                    //workerPool.execute(new Worker(key, this));
+                    workerPool.execute(new Worker(key, this,config));
 
-                    Worker worker = new Worker(key, this, config);
-                    worker.run();
+//                    Worker worker = new Worker(key, this, config);
+//                    worker.r1un();
 
                     updateKeys();
 
