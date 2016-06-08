@@ -31,6 +31,26 @@ public class PopParser {
     private boolean inImageHeader = false;
     private String imageFormat;
     private boolean inBody = false;
+    private boolean imageEnabled;
+    private boolean subjectEnabled;
+
+    public void setSubjectEnabled(boolean subjectEnabled) {
+        this.subjectEnabled = subjectEnabled;
+    }
+
+    public void setImageEnabled(boolean imageEnabled) {
+        this.imageEnabled = imageEnabled;
+    }
+
+    public void resetFlags()
+    {
+        subjectReady = false;
+        inSubject = false;
+        inImage = false;
+        inImageHeader = false;
+        inBody = false;
+    }
+
     public void parseData(StringBuffer stringBuffer){
         for (int i=0; i<stringBuffer.length(); i++)
         {
@@ -45,7 +65,7 @@ public class PopParser {
         while (!lineQueue.isEmpty()) {//lo que viene ahora podria hacer que lo haga con un while hasta que se vacie la cola
             String curLine = lineQueue.poll().toString();
             //stringBuffer.setLength(0);
-            if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady) {
+            if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady && subjectEnabled) {
                 inSubject = true;
                 curLine = "Subject:" + processSubject(curLine.substring(8)) + "\r\n";
             } else if (inSubject && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
@@ -56,7 +76,7 @@ public class PopParser {
             } else if (curLine.equals("\r\n") && !inImageHeader) {
                 inBody = true;
                 subjectReady = true;
-            } else if (isImageHeader(curLine) && !inImageHeader && inBody) {
+            } else if (isImageHeader(curLine) && !inImageHeader && inBody && imageEnabled) {
                 inImageHeader = true;
             } else if (inImageHeader && curLine.equals("\r\n")) {
                 inImage = true;
