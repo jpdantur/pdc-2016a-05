@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jaxb-impl">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/jaxb-ri/lib/jaxb-impl.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
