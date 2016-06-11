@@ -34,6 +34,7 @@ public class PopParser {
     private boolean imageEnabled;
     private boolean subjectEnabled;
 
+
     public void setSubjectEnabled(boolean subjectEnabled) {
         this.subjectEnabled = subjectEnabled;
     }

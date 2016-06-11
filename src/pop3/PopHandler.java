@@ -4,6 +4,7 @@ import proxy.handler.ConcurrentProxyHandler;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.regex.*;
 
 /**
  * Created by root on 5/27/16.
@@ -13,6 +14,12 @@ public class PopHandler extends ConcurrentProxyHandler {
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
     private Queue<TYPE> typeQueue;
+    private Pattern userPattern = Pattern.compile("USER ([^ \t]*)\r");
+
+    private String user;
+
+    private int attempts = 0;
+    private final int MAX_ATTEMPTS = 10;
 
     private static final int MAX_COMMAND_LENGTH = 255;
     private boolean halfEnd;
@@ -101,7 +108,28 @@ public class PopHandler extends ConcurrentProxyHandler {
     private void identifyType(int index) {
         String buffer = this.getStringBuffer().substring(0, index);
         buffer = buffer.toUpperCase();
+        Matcher userMatcher = userPattern.matcher(buffer);
 
+        System.out.println("|"+buffer +"|");
+
+        if(getOtherKey() == null) {
+            if(userMatcher.matches()){
+                attempts = 0;
+                if (getOtherKey() == null) {
+                    user = userMatcher.group(1);
+                    System.out.println("el usuario es: |" + user + "|");
+
+                }
+            }else{
+                attempts++;
+                if(attempts == MAX_ATTEMPTS){
+                    System.out.println("ahora hay que cerrar la conexion");
+                }
+            }
+            getStringBuffer().setLength(0);
+            this.type = TYPE.SAME;
+            return;
+        }
         if(buffer.contains("RETR") || buffer.contains("TOP")){
             ((PopHandler)this.getOtherHandler()).setModify();
         }else if(buffer.contains("LIST")){
