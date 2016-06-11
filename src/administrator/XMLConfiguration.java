@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by matias on 6/11/16.
  */
-@XmlRootElement(name="XMLConfiguration")
+@XmlRootElement(name="Configuration")
 public class XMLConfiguration {
     private int bufferSize;
     private int serverPort;
@@ -64,7 +64,7 @@ public class XMLConfiguration {
         return this.rotation;
     }
 
-    @XmlElement(name = "XMLAdmin")
+    @XmlElement(name = "Admin")
     public void setAdmin(List<XMLAdmin> admins) { this.adminList = admins; }
 
     public List<XMLAdmin> getAdmin() {

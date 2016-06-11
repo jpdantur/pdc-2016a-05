@@ -15,7 +15,7 @@ public class XMLMultiplex_config {
         return this.multiplexList;
     }
 
-    @XmlElement(name = "Multiplexing-config")
+    @XmlElement(name = "Multiplex")
     public void setMultiplexConfig(List<XMLMultiplex> multiplexList) {
         this.multiplexList = multiplexList;
     }

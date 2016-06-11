@@ -16,7 +16,7 @@ public class JAXBParser {
          XMLConfiguration c = null;
 
         try {
-            File file = new File("./XMLConfiguration.xml");
+            File file = new File("./Configuration.xml");
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLConfiguration.class);
 
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

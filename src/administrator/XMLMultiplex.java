@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by matias on 6/10/16.
  */
-@XmlRootElement(name="XMLMultiplex")
+@XmlRootElement(name="Multiplex")
 public class XMLMultiplex {
     String user;
     String host;

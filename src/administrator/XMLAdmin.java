@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Created by matias on 6/5/16.
  */
-@XmlRootElement(name="XMLAdmin")
+@XmlRootElement(name="Admin")
 public class XMLAdmin {
     String user;
     String pass;
