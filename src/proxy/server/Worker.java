@@ -85,7 +85,12 @@ public class Worker implements Runnable{
 
         handlerClient.setClient();
 
-        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_READ, clientAndProxy, key.selector(), handlerClient));
+        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
+        bb.compact();
+
+        handlerClient.setWriteBuffer(bb);
+
+        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
     }
 
@@ -134,6 +139,23 @@ public class Worker implements Runnable{
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
                 }
+                else if(!handler.getReadyToConnect()){
+                    serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
+                    return;
+                }
+            }
+
+            if(handler.getReadyToConnect()){
+
+                handler.setReadyToConnect(false);
+
+                //me fijo a que servidor
+                SocketChannel proxyAndServer = SocketChannel.open();
+                proxyAndServer.configureBlocking(false);
+                proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+                ProxyHandler handlerServer = serverTools.getNewHandler();
+
+                serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));
             }
 
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
@@ -190,6 +212,7 @@ public class Worker implements Runnable{
 
         handler.doneWriting();
     }
+
 
 
 }

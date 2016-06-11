@@ -2,6 +2,7 @@ package pop3;
 
 import proxy.handler.ConcurrentProxyHandler;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.*;
@@ -14,9 +15,7 @@ public class PopHandler extends ConcurrentProxyHandler {
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
     private Queue<TYPE> typeQueue;
-    private Pattern userPattern = Pattern.compile("USER ([^ \t]*)\r");
-
-    private String user;
+    private Pattern userPattern = Pattern.compile("USER ([^ \t]+)\r?");
 
     private int attempts = 0;
     private final int MAX_ATTEMPTS = 10;
@@ -116,17 +115,32 @@ public class PopHandler extends ConcurrentProxyHandler {
             if(userMatcher.matches()){
                 attempts = 0;
                 if (getOtherKey() == null) {
-                    user = userMatcher.group(1);
-                    System.out.println("el usuario es: |" + user + "|");
+                    this.setUser(userMatcher.group(1));
+                    System.out.println("el usuario es: |" + this.getUser() + "|");
+
+                    //crear socket con servidor
+
+                    this.setReadyToConnect(true);
 
                 }
             }else{
-                attempts++;
                 if(attempts == MAX_ATTEMPTS){
-                    System.out.println("ahora hay que cerrar la conexion");
+                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection\r\n".getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                    this.setToClose(true);
+                    //falta ver que cierre la conexion
+                }
+                else{
+                    attempts++;
+                    ByteBuffer bb = ByteBuffer.wrap("-ERR Unknown Command\r\n".getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
                 }
             }
-            getStringBuffer().setLength(0);
+            if(this.getOtherKey() == null)
+                getStringBuffer().setLength(0);
+
             this.type = TYPE.SAME;
             return;
         }
