@@ -2,8 +2,10 @@ package pop3;
 
 import proxy.handler.ConcurrentProxyHandler;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.regex.*;
 
 /**
  * Created by root on 5/27/16.
@@ -13,6 +15,10 @@ public class PopHandler extends ConcurrentProxyHandler {
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
     private Queue<TYPE> typeQueue;
+    private Pattern userPattern = Pattern.compile("USER ([^ \t]+)\r?");
+
+    private int attempts = 0;
+    private final int MAX_ATTEMPTS = 10;
 
     private static final int MAX_COMMAND_LENGTH = 255;
     private boolean halfEnd;
@@ -101,7 +107,43 @@ public class PopHandler extends ConcurrentProxyHandler {
     private void identifyType(int index) {
         String buffer = this.getStringBuffer().substring(0, index);
         buffer = buffer.toUpperCase();
+        Matcher userMatcher = userPattern.matcher(buffer);
 
+        System.out.println("|"+buffer +"|");
+
+        if(getOtherKey() == null) {
+            if(userMatcher.matches()){
+                attempts = 0;
+                if (getOtherKey() == null) {
+                    this.setUser(userMatcher.group(1));
+                    System.out.println("el usuario es: |" + this.getUser() + "|");
+
+                    //crear socket con servidor
+
+                    this.setReadyToConnect(true);
+
+                }
+            }else{
+                if(attempts == MAX_ATTEMPTS){
+                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection\r\n".getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                    this.setToClose(true);
+                    //falta ver que cierre la conexion
+                }
+                else{
+                    attempts++;
+                    ByteBuffer bb = ByteBuffer.wrap("-ERR Unknown Command\r\n".getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                }
+            }
+            if(this.getOtherKey() == null)
+                getStringBuffer().setLength(0);
+
+            this.type = TYPE.SAME;
+            return;
+        }
         if(buffer.contains("RETR") || buffer.contains("TOP")){
             ((PopHandler)this.getOtherHandler()).setModify();
         }else if(buffer.contains("LIST")){

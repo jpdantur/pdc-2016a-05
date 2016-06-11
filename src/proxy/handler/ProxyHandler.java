@@ -27,7 +27,13 @@ public interface ProxyHandler {
     boolean moreWriteableData(ByteBuffer byteBuffer);
     boolean transformBufferDone();
     void resetHandler();
+    boolean getReadyToConnect();
+    void setReadyToConnect(boolean readyToConnect);
+    String getUser();
+    void setUser(String user);
 
+    boolean getToClose();
+    void setToClose(boolean setToClose);
 
     boolean analizeData();
     void transformData();

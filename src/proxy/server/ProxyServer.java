@@ -52,7 +52,6 @@ public class ProxyServer implements ServerTools {
         logger.info("Proxy server is running.");
         try{
             while(true){
-
                 if(selector.select(TIMEOUT) == 0){
                     updateKeys();
                     continue;

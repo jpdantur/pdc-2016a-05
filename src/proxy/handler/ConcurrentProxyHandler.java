@@ -1,7 +1,10 @@
 package proxy.handler;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -17,6 +20,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     private boolean terminated;
     private boolean isClient;
+    private boolean readyToConnect;
+
+    private String user = null;
+    private boolean toClose = false;
 
     private static final int BUFFER_SIZE = 1024;
 
@@ -42,6 +49,8 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public ByteBuffer getWriteBuffer(){
         ByteBuffer buffer = writeQueue.pollFirst();
+        System.out.println("el valor es: ");
+        System.out.println( new String(buffer.array()));
         return buffer;
     }
 
@@ -143,4 +152,28 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         System.out.println("SETEO 0 ");
         stringBuffer.setLength(0);
     }
+
+    public boolean getReadyToConnect(){
+        return readyToConnect;
+    }
+    public void setReadyToConnect(boolean readyToConnect){
+        this.readyToConnect = readyToConnect;
+    }
+
+    public String getUser(){
+        return user;
+    }
+
+    public void setUser(String user){
+        this.user = user;
+    }
+
+    public boolean getToClose(){
+        return toClose;
+    }
+
+    public void setToClose(boolean toClose){
+        this.toClose = toClose;
+    }
+
 }

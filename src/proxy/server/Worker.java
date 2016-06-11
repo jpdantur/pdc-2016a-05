@@ -47,7 +47,7 @@ public class Worker implements Runnable{
         System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
 
-    private void handleAccept(SelectionKey key) throws IOException{
+    /*private void handleAccept(SelectionKey key) throws IOException{
         System.out.println("---Handling Accept---");
 
         SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
@@ -69,7 +69,36 @@ public class Worker implements Runnable{
 
         serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
+    }*/
+
+    private void handleAccept(SelectionKey key) throws IOException{
+        System.out.println("---Handling Accept---");
+
+        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
+        if(clientAndProxy == null) return;
+
+        //SocketChannel proxyAndServer = SocketChannel.open();
+
+        clientAndProxy.configureBlocking(false);
+        //proxyAndServer.configureBlocking(false);
+
+        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+
+        ProxyHandler handlerClient = serverTools.getNewHandler();
+        //ProxyHandler handlerServer = serverTools.getNewHandler();
+
+        handlerClient.setClient();
+
+        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
+        bb.compact();
+
+        handlerClient.setWriteBuffer(bb);
+
+        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
+        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
     }
+
+
 
     private void handleConnect(SelectionKey key) throws IOException{
         System.out.println("---Handling Connect---");
@@ -107,16 +136,36 @@ public class Worker implements Runnable{
 
             if(handler.analizeData()){
                // handler.appendBuffer();
-                if(handler.transformBufferDone()){
+                if(handler.transformBufferDone() && handler.getOtherKey() != null){
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
                 }
             }else{
-                handler.resetHandler();
-                handler.transferData();
-                serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                if(handler.getOtherKey() != null) {
+                    handler.resetHandler();
+                    handler.transferData();
+                    serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                }
+                else if(!handler.getReadyToConnect()){
+                    serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
+                    return;
+                }
             }
+
+            if(handler.getReadyToConnect()){
+
+                handler.setReadyToConnect(false);
+
+                //me fijo a que servidor
+                SocketChannel proxyAndServer = SocketChannel.open();
+                proxyAndServer.configureBlocking(false);
+                proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+                ProxyHandler handlerServer = serverTools.getNewHandler();
+
+                serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));
+            }
+
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
         }else{
             //if(handler.hasWrittenData()){
@@ -172,6 +221,7 @@ public class Worker implements Runnable{
 
         handler.doneWriting();
     }
+
 
 
 }
