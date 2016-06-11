@@ -1,9 +1,6 @@
-package manager;
+package administrator;
 
-import proxy.utils.Configuration;
-import proxy.utils.JAXBParser;
-import proxy.utils.Properties;
-
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -15,28 +12,30 @@ import java.util.Iterator;
  * Created by matias on 6/5/16.
  */
 public class Manager implements Runnable{
+    private final static Logger logger = Logger.getLogger(Manager.class);
     private static final int TIMEOUT = 3000; // Wait timeout (milliseconds)
     private static Configuration config;
 
-    public Manager(Configuration c) {
-        config = c;
+    public Manager() {
+        config = Configuration.getInstance();
     }
 
     @Override
     public void run() {
+        logger.info("Manager is running.");
         try {
             // Create a selector to multiplex listening sockets and connections
             Selector selector = Selector.open();
             // Create listening socket channel for each port and register selector
             ServerSocketChannel listnChannel = ServerSocketChannel.open();
-            listnChannel.socket().bind(new InetSocketAddress(config.getProp().getAdminProperties().get(0).getPort()));
+            listnChannel.socket().bind(new InetSocketAddress(config.getConfiguration().getAdmin().get(0).getPort()));
             listnChannel.configureBlocking(false); // must be nonblocking to
             // Register selector with channel. The returned key is ignored
             listnChannel.register(selector, SelectionKey.OP_ACCEPT);
 
             // Create a handler that will implement the protocol
-            TCPProtocol protocol = new ManagerProtocol(config.getProp().getBuffersize(),
-                    config.getProp().getAdminProperties().get(0));
+            TCPProtocol protocol = new AdministratorProtocol(config.getConfiguration().getBufferSize(),
+                    config.getConfiguration().getAdmin().get(0));
 
             while (true) { // Run forever, processing available I/O operations
                 // Wait for some channel to be ready (or timeout)

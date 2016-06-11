@@ -1,5 +1,6 @@
 package proxy.server;
 
+import administrator.Statistics;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
 
@@ -17,12 +18,12 @@ public class Worker implements Runnable{
 
     private SelectionKey key;
     private ServerTools serverTools;
-    private Configuration config;
+    private Statistics stat;
 
-    public Worker(SelectionKey key, ServerTools serverTools, Configuration c){
+    public Worker(SelectionKey key, ServerTools serverTools){
         this.key = key;
         this.serverTools = serverTools;
-        this.config = c;
+        this.stat = Statistics.getInstance();
     }
 
     @Override
@@ -64,7 +65,7 @@ public class Worker implements Runnable{
         handlerClient.setClient();
 
         //access BIEN COLOCADO ACA :V
-        config.addAccess();
+        stat.addAccess();
 
         serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
@@ -98,7 +99,7 @@ public class Worker implements Runnable{
             return;
         }
 
-        config.addAccess();
+        stat.addAccess();
         System.out.println("AGREGO access en HANDLEREAD.");
 
         if(bytesRead>0){
@@ -154,7 +155,7 @@ public class Worker implements Runnable{
         buffer.flip();
         long bytesWritten = channel.write(buffer);
 
-        config.addBytesTransferred(bytesWritten);
+        stat.addBytesTransferred(bytesWritten);
 
         if(handler.moreWriteableData(buffer)){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));

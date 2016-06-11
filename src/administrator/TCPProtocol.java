@@ -1,4 +1,4 @@
-package manager;
+package administrator;
 
 /**
  * Created by matias on 6/5/16.

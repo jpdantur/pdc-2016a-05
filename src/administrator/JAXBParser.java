@@ -1,4 +1,4 @@
-package proxy.utils;
+package administrator;
 
 import java.io.File;
 import javax.xml.bind.JAXBContext;
@@ -11,20 +11,21 @@ import javax.xml.bind.Unmarshaller;
 
 //link de refenrencia: http://www.mkyong.com/java/jaxb-hello-world-example/
 public class JAXBParser {
-    public static Properties getProperties() {
-        Properties prop = null;
+
+    public static XMLConfiguration getConfiguration() {
+         XMLConfiguration c = null;
 
         try {
-            File file = new File("./properties.xml");
-            JAXBContext jaxbContext = JAXBContext.newInstance(Properties.class);
+            File file = new File("./XMLConfiguration.xml");
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLConfiguration.class);
 
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            prop = (Properties) jaxbUnmarshaller.unmarshal(file);
+            c = (XMLConfiguration) jaxbUnmarshaller.unmarshal(file);
 
         } catch (JAXBException e) {
             e.printStackTrace();
         }
 
-        return prop;
+        return c;
     }
 }

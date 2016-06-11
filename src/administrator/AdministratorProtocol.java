@@ -1,9 +1,6 @@
-package manager;
+package administrator;
 
-import main.Main;
 import org.apache.log4j.Logger;
-import proxy.utils.AdminProperties;
-import proxy.utils.Configuration;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -16,12 +13,14 @@ import java.util.regex.Pattern;
  * Created by matias on 6/5/16.
  */
 
-public class ManagerProtocol implements TCPProtocol {
+public class AdministratorProtocol implements TCPProtocol {
     private int bufSize; // Size of I/O buffer
     private ByteBuffer readBuffer;
     private StringBuffer stringBuffer;
-    private AdminProperties admin;
+    private XMLAdmin admin;
+
     private Configuration config;
+    private Statistics stat;
 
     private static String OKresp = "+OK ";
     private static String ERRresp = "-ERR";
@@ -32,15 +31,15 @@ public class ManagerProtocol implements TCPProtocol {
     private String adminPass;
     private String adminUser;
 
-    private final static Logger logger = Logger.getLogger(ManagerProtocol.class);
+    private final static Logger logger = Logger.getLogger(AdministratorProtocol.class);
 
-
-    public ManagerProtocol(int bufSize, AdminProperties admin) {
+    public AdministratorProtocol(int bufSize, XMLAdmin admin) {
         this.bufSize = bufSize;
         this.readBuffer = ByteBuffer.allocate(this.bufSize);
         this.stringBuffer = new StringBuffer();
         this.admin = admin;
         this.config = Configuration.getInstance();
+        this.stat = Statistics.getInstance();
     }
 
     public void handleAccept(SelectionKey key) throws IOException {
@@ -99,7 +98,7 @@ public class ManagerProtocol implements TCPProtocol {
             clntChan.write(buf);
 
             if(sendResp.contains("goodbye")) {
-                logger.info("Close manager.");
+                logger.info("Close administrator.");
                 clntChan.close();
                 return;
             }
@@ -215,26 +214,25 @@ public class ManagerProtocol implements TCPProtocol {
         String value = input.toLowerCase();
         if(value.equals("yes")){
             this.leet = true;
-            this.config.getProp().setLeet(this.leet);
-            System.out.println(this.config.getProp().getLeet());
+            this.config.getConfiguration().setLeet(this.leet);
+            System.out.println(this.config.getConfiguration().getLeet());
             return 0;
         } else if(value.equals("no")){
             this.leet = false;
-            this.config.getProp().setLeet(this.leet);
-            System.out.println(this.config.getProp().getLeet());
+            this.config.getConfiguration().setLeet(this.leet);
+            System.out.println(this.config.getConfiguration().getLeet());
             return 0;
         }
         return 1;
     }
 
     private String getStat() {
-        return "Buffer size: " + config.getProp().getBuffersize()+"bytes\n" +
-                "Leet: " + config.getProp().getLeet() + "\n" +
-                "Manager Port: " + config.getProp().getAdminProperties().get(0).getPort() + "\n" +
-                "Proxy Port: " + config.getProp().getServerport() + "\n" +
-                "BytesTransferred: " + humanReadableByteCount(config.getBytesTransferred(), false) + "\n" +
-//                "BytesTransferred: " + config.getBytesTransferred() + "\n" +
-                "Access: " + config.getAccesses() + "\n";
+        return "Buffer size: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
+                "Leet: " + this.config.getConfiguration().getLeet() + "\n" +
+                "Manager Port: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
+                "Proxy Port: " + this.config.getConfiguration().getServerPort() + "\n" +
+                "BytesTransferred: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
+                "Access: " + stat.getAccesses() + "\n";
     }
 
     private String getQuit() {
@@ -247,7 +245,8 @@ public class ManagerProtocol implements TCPProtocol {
                 " PASS\n" +
                 " LEET\n" +
                 " BUFFERSIZE\n" +
-                " STAT\n";
+                " STAT\n" +
+                ".\n";
     }
 
 //    private String Histogram() {

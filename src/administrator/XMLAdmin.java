@@ -1,4 +1,4 @@
-package proxy.utils;
+package administrator;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Created by matias on 6/5/16.
  */
-@XmlRootElement(name="AdminProperties")
-public class AdminProperties {
+@XmlRootElement(name="XMLAdmin")
+public class XMLAdmin {
     String user;
     String pass;
     int port;

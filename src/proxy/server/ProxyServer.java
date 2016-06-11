@@ -1,11 +1,13 @@
 package proxy.server;
 
+import administrator.Configuration;
+import org.apache.log4j.Logger;
 import proxy.handler.HandlerBuilder;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
+import java.net.InetSocketAddress;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -19,21 +21,24 @@ import java.util.concurrent.Executors;
  * Created by root on 5/27/16.
  */
 public class ProxyServer implements ServerTools {
+    private final static Logger logger = Logger.getLogger(ProxyServer.class);
+
     private final Selector selector;
     private final ServerSocketChannel serverSocketChannel;
     private static ExecutorService workerPool;
     private static Queue<KeyModifier> keyModifierQueue;
     private HandlerBuilder handlerBuilder;
+
     private  static Configuration config;
 
     private static final int WORKER_POOL = 100;
     private static final long TIMEOUT = 10;
 
-    public ProxyServer(Configuration c, HandlerBuilder handlerBuilder) throws IOException {
-        config = c;
+    public ProxyServer(HandlerBuilder handlerBuilder) throws IOException {
+        config = Configuration.getInstance();
         selector = Selector.open();
         serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(config.getProp().getServerport()));
+        serverSocketChannel.socket().bind(new InetSocketAddress(config.getConfiguration().getServerPort()));
         serverSocketChannel.configureBlocking(false);
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
@@ -44,7 +49,7 @@ public class ProxyServer implements ServerTools {
     }
 
     public void run(){
-
+        logger.info("Proxy server is running.");
         try{
             while(true){
 
@@ -61,10 +66,10 @@ public class ProxyServer implements ServerTools {
                     if(!key.isValid()) continue;
                     key.interestOps(0);
 
-                    workerPool.execute(new Worker(key, this,config));
+//                    workerPool.execute(new Worker(key, this,config));
 
-//                    Worker worker = new Worker(key, this, config);
-//                    worker.r1un();
+                    Worker worker = new Worker(key, this);
+                    worker.run();
 
                     updateKeys();
 

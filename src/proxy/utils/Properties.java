@@ -1,5 +1,7 @@
 package proxy.utils;
 
+import administrator.XMLAdmin;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -12,7 +14,7 @@ public class Properties {
     int buffersize;
     int serverport;
     int pop3Port;
-    List<AdminProperties> adminProperties;
+    List<XMLAdmin> adminProperties;
     String servername;
     boolean leet;
 
@@ -26,8 +28,8 @@ public class Properties {
         this.serverport = sp;
     }
 
-    @XmlElement(name = "Admin")
-    public void setAdminProperties(List<AdminProperties> ad) {
+    @XmlElement(name = "XMLAdmin")
+    public void setAdminProperties(List<XMLAdmin> ad) {
         this.adminProperties = ad;
     }
 
@@ -58,7 +60,7 @@ public class Properties {
         return this.serverport;
     }
 
-    public List<AdminProperties> getAdminProperties() {
+    public List<XMLAdmin> getAdminProperties() {
         return this.adminProperties;
     }
     public int getPop3Port() {
