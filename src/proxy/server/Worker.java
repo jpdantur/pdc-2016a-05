@@ -8,11 +8,13 @@ import proxy.utils.*;
 
 import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.rmi.ConnectIOException;
 
 /**
  * Created by root on 5/27/16.
@@ -46,8 +48,38 @@ public class Worker implements Runnable{
             }else if (key.isValid() && key.isWritable()){
                 handleWrite(key);
             }
+        } catch (ConnectException e){
+            ByteBuffer bb = ByteBuffer.wrap("-ERR server down.\r\n".getBytes());
+            bb.compact();
+            ((ProxyHandler)((ProxyHandler)key.attachment()).getOtherKey().attachment()).setWriteBuffer(bb);
+            serverTools.queue(new QueuedKey(((ProxyHandler)key.attachment()).getOtherKey(), SelectionKey.OP_WRITE));
+            //e.printStackTrace();
         } catch (IOException e) {
+<<<<<<< HEAD
             logger.debug(e.getStackTrace());
+=======
+            ProxyHandler handler = ((ProxyHandler)key.attachment());
+            if(handler.isClient()){
+                if(handler.getOtherKey() != null) {
+                    try {
+                        handler.getOtherKey().channel().close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }else{
+                ByteBuffer bb = ByteBuffer.wrap("-ERR Connection lost.\r\n".getBytes());
+                bb.compact();
+                ((ProxyHandler)handler.getOtherKey().attachment()).setWriteBuffer(bb);
+                handler.setTerminated(true);
+            }
+            try {
+                key.channel().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            key.cancel();
+>>>>>>> Multiplexor
         }
         //System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
@@ -199,7 +231,12 @@ public class Worker implements Runnable{
                 serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));
             }
 
-            serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
+            if(handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).writeBufferListSize() <= 20){
+                serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
+            }
+            else{
+                serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
+            }
         } else {
             //if(handler.hasWrittenData()){
             System.out.println("-** Setting Terminated **-");
@@ -253,6 +290,10 @@ public class Worker implements Runnable{
             }else{
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
+        }
+
+        if(handler.getOtherKey() != null && handler.writeBufferListSize() <= 5){
+            serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_READ));
         }
 
         handler.doneWriting();

@@ -38,6 +38,8 @@ public interface ProxyHandler {
     boolean getWrongPass();
     void setWrongPass(boolean wrongPass);
 
+    int writeBufferListSize();
+
     boolean getToClose();
     void setToClose(boolean setToClose);
 

@@ -68,7 +68,7 @@ public class PopParser {
             //stringBuffer.setLength(0);
             if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady && subjectEnabled) {
                 inSubject = true;
-                curLine = "Subject:" + processSubject(curLine.substring(8)) + "\r\n";
+                curLine = "Subject:" + processSubject(curLine.substring(8));
             } else if (inSubject && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
                 curLine = processSubject(curLine) + "\r\n";
             } else if (inSubject) {
