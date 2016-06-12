@@ -13,7 +13,7 @@ import java.util.Iterator;
  */
 public class Administrator implements Runnable{
     private final static Logger logger = Logger.getLogger(Administrator.class);
-    private static final int TIMEOUT = 3000; // Wait timeout (milliseconds)
+    private static final int TIMEOUT = 10; // Wait timeout (milliseconds)
     private static Configuration config;
 
     public Administrator() {
@@ -40,7 +40,6 @@ public class Administrator implements Runnable{
             while (true) { // Run forever, processing available I/O operations
                 // Wait for some channel to be ready (or timeout)
                 if (selector.select(TIMEOUT) == 0) { // returns # of ready chans
-                    System.out.print(".");
                     continue;
                 }
                 // Get iterator on set of keys with I/O to process
