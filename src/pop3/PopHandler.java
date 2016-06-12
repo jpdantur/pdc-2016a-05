@@ -69,14 +69,14 @@ public class PopHandler extends ConcurrentProxyHandler {
         //Si ya tengo todo para modificar, lo hago, y return true
         //Si no, return false
         //this.type = TYPE.UNKOWN;
-        System.out.println("Aca empieza");
+        //System.out.println("Aca empieza");
         transformData();
-        System.out.println("Len: "+this.getStringBuffer().length());
+        //System.out.println("Len: "+this.getStringBuffer().length());
         return this.getStringBuffer().length()!=0;
     }
 
     public void resetHandler(){
-        System.out.println("TIPO ACTUAL " + this.type);
+        //System.out.println("TIPO ACTUAL " + this.type);
         if(isClient()) return;
         if(this.type == TYPE.SAME){
             this.type = TYPE.UNKOWN;
@@ -85,10 +85,10 @@ public class PopHandler extends ConcurrentProxyHandler {
         int length = this.getStringBuffer().length();
 
         if(this.getStringBuffer().indexOf("\r\n.\r\n")!=-1){
-            System.out.println("SETEO UNKOWN - RESET HANDLER");
+            //System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
-            System.out.println("SETEO UNKOWN - RESET HANDLER");
+            //System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }
         this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
@@ -107,43 +107,43 @@ public class PopHandler extends ConcurrentProxyHandler {
     private void identifyType(int index) {
         String buffer = this.getStringBuffer().substring(0, index);
         buffer = buffer.toUpperCase();
-        Matcher userMatcher = userPattern.matcher(buffer);
-
+//        Matcher userMatcher = userPattern.matcher(buffer);
+//
         System.out.println("|"+buffer +"|");
-
-        if(getOtherKey() == null) {
-            if(userMatcher.matches()){
-                attempts = 0;
-                if (getOtherKey() == null) {
-                    this.setUser(userMatcher.group(1));
+//
+//        if(getOtherKey() == null) {
+//            if(userMatcher.matches()){
+//                attempts = 0;
+//                if (getOtherKey() == null) {
+//                    this.setUser(userMatcher.group(1));
                     System.out.println("el usuario es: |" + this.getUser() + "|");
-
-                    //crear socket con servidor
-
-                    this.setReadyToConnect(true);
-
-                }
-            }else{
-                if(attempts == MAX_ATTEMPTS){
-                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection\r\n".getBytes());
-                    bb.compact();
-                    this.setWriteBuffer(bb);
-                    this.setToClose(true);
-                    //falta ver que cierre la conexion
-                }
-                else{
-                    attempts++;
-                    ByteBuffer bb = ByteBuffer.wrap("-ERR Unknown Command\r\n".getBytes());
-                    bb.compact();
-                    this.setWriteBuffer(bb);
-                }
-            }
-            if(this.getOtherKey() == null)
-                getStringBuffer().setLength(0);
-
-            this.type = TYPE.SAME;
-            return;
-        }
+//
+//                    //crear socket con servidor
+//
+//                    this.setReadyToConnect(true);
+//
+//                }
+//            }else{
+//                if(attempts == MAX_ATTEMPTS){
+//                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection\r\n".getBytes());
+//                    bb.compact();
+//                    this.setWriteBuffer(bb);
+//                    this.setToClose(true);
+//                    //falta ver que cierre la conexion
+//                }
+//                else{
+//                    attempts++;
+//                    ByteBuffer bb = ByteBuffer.wrap("-ERR Unknown Command\r\n".getBytes());
+//                    bb.compact();
+//                    this.setWriteBuffer(bb);
+//                }
+//            }
+//            if(this.getOtherKey() == null)
+//                getStringBuffer().setLength(0);
+//
+//            this.type = TYPE.SAME;
+//            return;
+//        }
         if(buffer.contains("RETR") || buffer.contains("TOP")){
             ((PopHandler)this.getOtherHandler()).setModify();
         }else if(buffer.contains("LIST")){
@@ -160,17 +160,17 @@ public class PopHandler extends ConcurrentProxyHandler {
 
 
     public void setSame(){
-        System.out.println("---SAME---");
+        //System.out.println("---SAME---");
         this.typeQueue.offer(TYPE.SAME);
     }
 
     public void setModify(){
-        System.out.println("---MODIFY---");
+        //System.out.println("---MODIFY---");
         this.typeQueue.offer(TYPE.MODIFY);
     }
 
     public void setMlSame(){
-        System.out.println("---ML_SAME---");
+        //System.out.println("---ML_SAME---");
         this.typeQueue.offer(TYPE.ML_SAME);
     }
 

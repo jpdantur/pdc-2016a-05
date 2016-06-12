@@ -1,5 +1,6 @@
 package proxy.utils;
 
+import administrator.Configuration;
 import proxy.handler.ProxyHandler;
 
 import java.nio.channels.ClosedChannelException;

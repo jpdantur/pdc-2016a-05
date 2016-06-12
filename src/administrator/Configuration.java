@@ -21,4 +21,5 @@ public class Configuration {
     public XMLConfiguration getConfiguration() {
         return Configuration.XMLConfiguration;
     }
+
 }

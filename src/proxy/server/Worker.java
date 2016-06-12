@@ -2,6 +2,7 @@ package proxy.server;
 
 import administrator.Configuration;
 import administrator.Statistics;
+import org.apache.log4j.Logger;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
 
@@ -16,22 +17,22 @@ import java.nio.channels.SocketChannel;
  * Created by root on 5/27/16.
  */
 public class Worker implements Runnable{
-
+    private final static Logger logger = Logger.getLogger(Worker.class);
     private SelectionKey key;
     private ServerTools serverTools;
-    private Statistics stat;
-    private Configuration config;
+    Statistics stat;
+    Configuration config;
 
     public Worker(SelectionKey key, ServerTools serverTools){
         this.key = key;
         this.serverTools = serverTools;
-        this.stat = Statistics.getInstance();
-        this.config = Configuration.getInstance();
+        stat = Statistics.getInstance();
+        config = Configuration.getInstance();
     }
 
     @Override
     public void run() {
-        System.out.println("Nace thread: " + Thread.currentThread().getId());
+        //System.out.println("Nace thread: " + Thread.currentThread().getId());
         try {
             if(!key.isValid()) return;
 
@@ -45,16 +46,16 @@ public class Worker implements Runnable{
                 handleWrite(key);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug(e.getStackTrace());
         }
-        System.out.println("Muere thread: " + Thread.currentThread().getId());
+        //System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
 
-    /*private void handleAccept(SelectionKey key) throws IOException{
+    private void handleAccept(SelectionKey key) throws IOException {
         System.out.println("---Handling Accept---");
 
         SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
-        if(clientAndProxy == null) return;
+        if (clientAndProxy == null) return;
 
         SocketChannel proxyAndServer = SocketChannel.open();
 
@@ -72,39 +73,39 @@ public class Worker implements Runnable{
 
         serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
-    }*/
-
-    private void handleAccept(SelectionKey key) throws IOException{
-        System.out.println("---Handling Accept---");
-
-        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
-        if(clientAndProxy == null) return;
-
-        //SocketChannel proxyAndServer = SocketChannel.open();
-
-        clientAndProxy.configureBlocking(false);
-        //proxyAndServer.configureBlocking(false);
-
-        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
-
-        ProxyHandler handlerClient = serverTools.getNewHandler();
-        //ProxyHandler handlerServer = serverTools.getNewHandler();
-
-        handlerClient.setClient();
-
-        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
-        bb.compact();
-
-        handlerClient.setWriteBuffer(bb);
-
-        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
-        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
     }
+
+//    private void handleAccept(SelectionKey key) throws IOException{
+//        System.out.println("---Handling Accept---");
+//
+//        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
+//        if(clientAndProxy == null) return;
+//
+//        //SocketChannel proxyAndServer = SocketChannel.open();
+//
+//        clientAndProxy.configureBlocking(false);
+//        //proxyAndServer.configureBlocking(false);
+//
+//        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+//
+//        ProxyHandler handlerClient = serverTools.getNewHandler();
+//        //ProxyHandler handlerServer = serverTools.getNewHandler();
+//
+//        handlerClient.setClient();
+//
+//        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
+//        bb.compact();
+//
+//        handlerClient.setWriteBuffer(bb);
+//
+//        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
+//        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
+//    }
 
 
 
     private void handleConnect(SelectionKey key) throws IOException{
-        System.out.println("---Handling Connect---");
+        //System.out.println("---Handling Connect---");
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if(socketChannel.finishConnect()){
@@ -117,7 +118,7 @@ public class Worker implements Runnable{
     }
 
     private void handleRead(SelectionKey key) throws IOException{
-        System.out.println("---Handling Read---" + key.toString());
+        //System.out.println("---Handling Read---" + key.toString());
         ProxyHandler handler = (ProxyHandler)key.attachment();
 
         SocketChannel channel = (SocketChannel) key.channel();
@@ -130,8 +131,7 @@ public class Worker implements Runnable{
             return;
         }
 
-        stat.addAccess();
-        System.out.println("AGREGO access en HANDLEREAD.");
+        //System.out.println("AGREGO access en HANDLEREAD.");
 
         if(bytesRead>0){
             handler.appendBuffer();
@@ -183,6 +183,7 @@ public class Worker implements Runnable{
                 handler.getOtherKey().cancel();
             }*/
             channel.close();
+            logger.debug("channel close OF " + key.toString());
             key.cancel();
         }
 
@@ -191,7 +192,7 @@ public class Worker implements Runnable{
     }
 
     private void handleWrite(SelectionKey key) throws IOException{
-        System.out.println("---Handling Write---" + key.toString());
+        //System.out.println("---Handling Write---" + key.toString());
         ProxyHandler handler = (ProxyHandler) key.attachment();
 
         SocketChannel channel = (SocketChannel) key.channel();
@@ -199,7 +200,8 @@ public class Worker implements Runnable{
 
         if(buffer==null){
             if(handler.isTerminated()){
-                System.out.println("-*- Closing Channels (write) -*-");
+                //System.out.println("-*- Closing Channels (write) -*-");
+                logger.debug("channel close OF " + key.toString());
                 channel.close();
                 key.cancel();
             }
@@ -213,9 +215,10 @@ public class Worker implements Runnable{
         if(handler.moreWriteableData(buffer)){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
         }else{
-            System.out.println("no remaining");
+            //System.out.println("no remaining");
             if(handler.isTerminated()){
-                System.out.println("-*- Closing Channels (write) -*-");
+                //System.out.println("-*- Closing Channels (write) -*-");
+                logger.debug("channel close OF " + key.toString());
                 channel.close();
                 key.cancel();
             }else{

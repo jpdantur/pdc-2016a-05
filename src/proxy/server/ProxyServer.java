@@ -65,10 +65,10 @@ public class ProxyServer implements ServerTools {
                     if(!key.isValid()) continue;
                     key.interestOps(0);
 
-//                    workerPool.execute(new Worker(key, this,config));
+                    workerPool.execute(new Worker(key, this));
 
-                    Worker worker = new Worker(key, this);
-                    worker.run();
+//                    Worker worker = new Worker(key, this);
+//                    worker.run();
 
                     updateKeys();
 
@@ -85,8 +85,7 @@ public class ProxyServer implements ServerTools {
     }
 
     @Override
-    public ProxyHandler getNewHandler() {
-        return handlerBuilder.build();
+    public ProxyHandler getNewHandler() { return handlerBuilder.build();
     }
 
     private void updateKeys(){

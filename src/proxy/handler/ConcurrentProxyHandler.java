@@ -49,8 +49,9 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public ByteBuffer getWriteBuffer(){
         ByteBuffer buffer = writeQueue.pollFirst();
-        System.out.println("el valor es: ");
-        System.out.println( new String(buffer.array()));
+        //System.out.println("el valor es: ");
+        //TODO despues de borrar emails y luego hacer quit, intellj me lanzo un nullpointer y en terminal no se temrina la conexion
+        //System.out.println( new String(buffer.array()));
         return buffer;
     }
 
@@ -62,7 +63,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         System.out.println(new String(writeBuffer.array()));
         System.out.println("++++++++++++++");*/
 
-        System.out.println( new String(bb.array()));
+        //System.out.println( new String(bb.array()));
         writeQueue.addLast(bb);
     }
 
@@ -123,12 +124,12 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public void terminate() {
-        System.out.println("SET TERMINATED");
+        //System.out.println("SET TERMINATED");
         ((ConcurrentProxyHandler)this.getOtherKey().attachment()).setTerminated(true);
     }
 
     public void appendBuffer() {
-        System.out.println("append");
+        //System.out.println("append");
         //if(!readBuffer.hasRemaining()) return;
 
         readBuffer.flip();
@@ -138,8 +139,8 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
         readBuffer.clear();
 
-        System.out.println("---String buffer---");
-        System.out.println(stringBuffer.toString());
+        //System.out.println("---String buffer---");
+        //System.out.println(stringBuffer.toString());
     }
 
     public void transferData() {
@@ -149,7 +150,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         otherWriteBuffer.put(stringBuffer.toString().getBytes());
 
         ((ConcurrentProxyHandler) getOtherKey().attachment()).setWriteBuffer(otherWriteBuffer);
-        System.out.println("SETEO 0 ");
+        //System.out.println("SETEO 0 ");
         stringBuffer.setLength(0);
     }
 
