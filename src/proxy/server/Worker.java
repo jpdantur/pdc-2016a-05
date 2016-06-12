@@ -2,6 +2,8 @@ package proxy.server;
 
 import administrator.Configuration;
 import administrator.Statistics;
+import administrator.XMLMultiplex;
+import administrator.XMLMultiplex_config;
 import org.apache.log4j.Logger;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
@@ -15,6 +17,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.rmi.ConnectIOException;
+import java.util.List;
 
 /**
  * Created by root on 5/27/16.
@@ -80,7 +83,7 @@ public class Worker implements Runnable{
         //System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
 
-    private void handleAccept(SelectionKey key) throws IOException {
+    /*private void handleAccept(SelectionKey key) throws IOException {
         System.out.println("---Handling Accept---");
 
         SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
@@ -102,34 +105,36 @@ public class Worker implements Runnable{
 
         serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
         serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
-    }
+    }*/
 
-//    private void handleAccept(SelectionKey key) throws IOException{
-//        System.out.println("---Handling Accept---");
-//
-//        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
-//        if(clientAndProxy == null) return;
-//
-//        //SocketChannel proxyAndServer = SocketChannel.open();
-//
-//        clientAndProxy.configureBlocking(false);
-//        //proxyAndServer.configureBlocking(false);
-//
-//        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
-//
-//        ProxyHandler handlerClient = serverTools.getNewHandler();
-//        //ProxyHandler handlerServer = serverTools.getNewHandler();
-//
-//        handlerClient.setClient();
-//
-//        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
-//        bb.compact();
-//
-//        handlerClient.setWriteBuffer(bb);
-//
-//        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
-//        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
-//    }
+    private void handleAccept(SelectionKey key) throws IOException{
+        System.out.println("---Handling Accept---");
+
+        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
+        if(clientAndProxy == null) return;
+
+        //SocketChannel proxyAndServer = SocketChannel.open();
+
+        clientAndProxy.configureBlocking(false);
+        //proxyAndServer.configureBlocking(false);
+
+        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+
+        ProxyHandler handlerClient = serverTools.getNewHandler();
+        //ProxyHandler handlerServer = serverTools.getNewHandler();
+
+        handlerClient.setClient();
+
+        ByteBuffer bb = ByteBuffer.wrap("+OK ready\r\n".getBytes());
+        bb.compact();
+
+        handlerClient.setWriteBuffer(bb);
+
+        stat.addAccess();
+
+        serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_WRITE, clientAndProxy, key.selector(), handlerClient));
+        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
+    }
 
 
 
@@ -218,10 +223,33 @@ public class Worker implements Runnable{
 
                 handler.setReadyToConnect(false);
 
-                //falta que me fije a que servidor !!!!
+
                 SocketChannel proxyAndServer = SocketChannel.open();
                 proxyAndServer.configureBlocking(false);
-                proxyAndServer.connect(new InetSocketAddress("localhost", 110));
+
+                String host = null;
+                int port = 0;
+
+                XMLMultiplex_config m = config.getConfiguration().getMultiplexConfig().get(0);
+
+                List<XMLMultiplex> m2 = m.getMultiplexConfig();
+
+
+                for (XMLMultiplex each: m2) {
+                    String u = each.getUser();
+                    if(u.toUpperCase().equals(handler.getUser().toUpperCase())){
+                        host = each.getHost();
+                        port = each.getPort();
+                    }
+                }
+
+                if(host == null){
+                    host =config.getConfiguration().getServername();
+                    port = config.getConfiguration().getPOP3port();
+                }
+
+                //falta que me fije a que servidor !!!!
+                proxyAndServer.connect(new InetSocketAddress(host, port));
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
                 serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));

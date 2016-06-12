@@ -28,5 +28,15 @@
             <Host>host</Host>
             <Port>3333</Port>
         </Multiplex>
+        <Multiplex>
+            <User>jose</User>
+            <Host>localhost</Host>
+            <Port>110</Port>
+        </Multiplex>
+        <Multiplex>
+            <User>jpdantur</User>
+            <Host>pop.fibertel.com.ar</Host>
+            <Port>110</Port>
+        </Multiplex>
     </Multiplexing-config>
 </Configuration>
