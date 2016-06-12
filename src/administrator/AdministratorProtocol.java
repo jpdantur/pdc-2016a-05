@@ -265,6 +265,7 @@ public class AdministratorProtocol implements TCPProtocol {
                 "USER\n" +
                 "PASS\n" +
                 "LEET\n" +
+                "ROTATION\n" +
                 "BUFFERSIZE\n" +
                 "STAT\n" + 
                 ".\n";

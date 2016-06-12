@@ -52,12 +52,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public ByteBuffer getWriteBuffer(){
         ByteBuffer buffer = writeQueue.pollFirst();
-<<<<<<< HEAD
-        //System.out.println("el valor es: ");
-        //TODO despues de borrar emails y luego hacer quit, intellj me lanzo un nullpointer y en terminal no se temrina la conexion
-        //System.out.println( new String(buffer.array()));
-=======
->>>>>>> Multiplexor
         return buffer;
     }
 
@@ -130,15 +124,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public void terminate() {
-<<<<<<< HEAD
-        //System.out.println("SET TERMINATED");
-        ((ConcurrentProxyHandler)this.getOtherKey().attachment()).setTerminated(true);
-=======
         System.out.println("SET TERMINATED");
         if(otherKey != null) {
             ((ConcurrentProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
         }
->>>>>>> Multiplexor
     }
 
     public void appendBuffer() {
@@ -162,10 +151,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
         otherWriteBuffer.put(stringBuffer.toString().getBytes());
 
-<<<<<<< HEAD
-        ((ConcurrentProxyHandler) getOtherKey().attachment()).setWriteBuffer(otherWriteBuffer);
-        //System.out.println("SETEO 0 ");
-=======
         ConcurrentProxyHandler otherHandler = ((ConcurrentProxyHandler) getOtherKey().attachment());
 
         if(((ConcurrentProxyHandler)otherKey.attachment()).getOtherKey() != null){
@@ -173,7 +158,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         }
 
         System.out.println("SETEO 0 ");
->>>>>>> Multiplexor
         stringBuffer.setLength(0);
         return writeQueue.size();
     }

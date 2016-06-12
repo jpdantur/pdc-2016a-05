@@ -103,19 +103,12 @@ public class PopHandler extends ConcurrentProxyHandler {
         int length = this.getStringBuffer().length();
 
         if(this.getStringBuffer().indexOf("\r\n.\r\n")!=-1){
-<<<<<<< HEAD
-            //System.out.println("SETEO UNKOWN - RESET HANDLER");
-            this.type = TYPE.UNKOWN;
-        }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
-            //System.out.println("SETEO UNKOWN - RESET HANDLER");
-=======
             this.popParser.resetFlags();
             System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
             this.popParser.resetFlags();
             System.out.println("SETEO UNKOWN - RESET HANDLER");
->>>>>>> Multiplexor
             this.type = TYPE.UNKOWN;
         }
         this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
@@ -132,47 +125,6 @@ public class PopHandler extends ConcurrentProxyHandler {
     }
 
     private void identifyType(int index) {
-<<<<<<< HEAD
-        String buffer = this.getStringBuffer().substring(0, index);
-        buffer = buffer.toUpperCase();
-//        Matcher userMatcher = userPattern.matcher(buffer);
-//
-        System.out.println("|"+buffer +"|");
-//
-//        if(getOtherKey() == null) {
-//            if(userMatcher.matches()){
-//                attempts = 0;
-//                if (getOtherKey() == null) {
-//                    this.setUser(userMatcher.group(1));
-                    System.out.println("el usuario es: |" + this.getUser() + "|");
-//
-//                    //crear socket con servidor
-//
-//                    this.setReadyToConnect(true);
-//
-//                }
-//            }else{
-//                if(attempts == MAX_ATTEMPTS){
-//                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection\r\n".getBytes());
-//                    bb.compact();
-//                    this.setWriteBuffer(bb);
-//                    this.setToClose(true);
-//                    //falta ver que cierre la conexion
-//                }
-//                else{
-//                    attempts++;
-//                    ByteBuffer bb = ByteBuffer.wrap("-ERR Unknown Command\r\n".getBytes());
-//                    bb.compact();
-//                    this.setWriteBuffer(bb);
-//                }
-//            }
-//            if(this.getOtherKey() == null)
-//                getStringBuffer().setLength(0);
-//
-//            this.type = TYPE.SAME;
-//            return;
-//        }
-=======
         String originalBuffer = this.getStringBuffer().substring(0, index);
         String buffer = originalBuffer.toUpperCase();
         Matcher userMatcher = userPattern.matcher(originalBuffer);
@@ -247,7 +199,6 @@ public class PopHandler extends ConcurrentProxyHandler {
             this.type = TYPE.SAME;
             return;
         }
->>>>>>> Multiplexor
         if(buffer.contains("RETR") || buffer.contains("TOP")){
             ((PopHandler)this.getOtherHandler()).setModify();
         }else if(buffer.contains("LIST")){

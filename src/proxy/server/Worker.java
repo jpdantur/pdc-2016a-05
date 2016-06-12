@@ -147,13 +147,7 @@ public class Worker implements Runnable{
             return;
         }
 
-<<<<<<< HEAD
-        //System.out.println("AGREGO access en HANDLEREAD.");
-
-        if(bytesRead>0){
-=======
         if (bytesRead > 0) {
->>>>>>> Multiplexor
             handler.appendBuffer();
 
             if (handler.analizeData()) {
@@ -199,13 +193,7 @@ public class Worker implements Runnable{
                 //falta que me fije a que servidor !!!!
                 SocketChannel proxyAndServer = SocketChannel.open();
                 proxyAndServer.configureBlocking(false);
-<<<<<<< HEAD
-                proxyAndServer.connect(new InetSocketAddress(config.getConfiguration().getServername(),
-                        config.getConfiguration().getPOP3port()));
-//              proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
-=======
                 proxyAndServer.connect(new InetSocketAddress("localhost", 110));
->>>>>>> Multiplexor
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
                 serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));
