@@ -26,8 +26,8 @@ public class PopParser {
     private Pattern imageHeaderPattern = Pattern.compile(imageHeaderRegex, Pattern.CASE_INSENSITIVE);
     private Queue<StringBuilder> lineQueue = new LinkedList<>();
     private String imageFormat;
-    private boolean imageEnabled = true;
-    private boolean subjectEnabled = true;
+    private boolean imageEnabled;
+    private boolean subjectEnabled;
     private enum State {HEADER, SUBJECT, POST_SUBJECT, BODY, IMAGE_HEADER, IMAGE}
     private State state = State.HEADER;
     private static final int MAX_IMAGE_SIZE = 10000; //creo q son 10 Kb, de ultima se cambia
@@ -77,6 +77,7 @@ public class PopParser {
                 curLine = "";
             } else if (state == State.IMAGE && !curLine.startsWith("--") && image.length()>MAX_IMAGE_SIZE) {
                 state = State.BODY;
+                stringBuffer.append(image);
                 image.setLength(0);
 
             } else if (state == State.IMAGE && curLine.startsWith("--")) {

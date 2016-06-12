@@ -1,5 +1,6 @@
 package pop3;
 
+import administrator.Configuration;
 import proxy.handler.ConcurrentProxyHandler;
 
 import java.nio.ByteBuffer;
@@ -19,6 +20,7 @@ public class PopHandler extends ConcurrentProxyHandler {
     private Pattern capaPattern = Pattern.compile("CAPA*\r?");
     private Pattern passPattern = Pattern.compile("[P|p][A|a][S|s][S|s] ?(.*)\r?");
     private Pattern quitPattern = Pattern.compile("[Q|q][U|u][I|i][T|t] ?(.*)\r?");
+    private static Configuration config = Configuration.getInstance();
 
     private int serverResponses = 0;
 
@@ -108,6 +110,8 @@ public class PopHandler extends ConcurrentProxyHandler {
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
             this.popParser.resetFlags();
+            popParser.setSubjectEnabled(config.getConfiguration().getLeet());
+            popParser.setImageEnabled(config.getConfiguration().getRotation());
             System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }
@@ -222,6 +226,9 @@ public class PopHandler extends ConcurrentProxyHandler {
     public void setModify(){
         //System.out.println("---MODIFY---");
         this.typeQueue.offer(TYPE.MODIFY);
+
+        popParser.setSubjectEnabled(config.getConfiguration().getLeet());
+        popParser.setImageEnabled(config.getConfiguration().getRotation());
     }
 
     public void setMlSame(){
