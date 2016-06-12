@@ -25,31 +25,24 @@ public class PopParser {
     private String imageHeaderRegex = "^content-type:[ \\t]*image/(.*?);.*\r\n";
     private Pattern imageHeaderPattern = Pattern.compile(imageHeaderRegex, Pattern.CASE_INSENSITIVE);
     private Queue<StringBuilder> lineQueue = new LinkedList<>();
-    private boolean subjectReady = false;
-    private boolean inSubject = false;
-    private boolean inImage = false;
-    private boolean inImageHeader = false;
     private String imageFormat;
-    private boolean inBody = false;
     private boolean imageEnabled = true;
     private boolean subjectEnabled = true;
+    private enum State {HEADER, SUBJECT, POST_SUBJECT, BODY, IMAGE_HEADER, IMAGE}
+    private State state = State.HEADER;
+    private static final int MAX_IMAGE_SIZE = 10000; //creo q son 10 Kb, de ultima se cambia
 
 
     public void setSubjectEnabled(boolean subjectEnabled) {
         this.subjectEnabled = subjectEnabled;
     }
 
-    public void setImageEnabled(boolean imageEnabled) {
-        this.imageEnabled = imageEnabled;
-    }
+    public void setImageEnabled(boolean imageEnabled) {this.imageEnabled = imageEnabled; }
 
     public void resetFlags()
     {
-        subjectReady = false;
-        inSubject = false;
-        inImage = false;
-        inImageHeader = false;
-        inBody = false;
+        state = State.HEADER;
+
     }
 
     public void parseData(StringBuffer stringBuffer){
@@ -66,27 +59,28 @@ public class PopParser {
         while (!lineQueue.isEmpty()) {//lo que viene ahora podria hacer que lo haga con un while hasta que se vacie la cola
             String curLine = lineQueue.poll().toString();
             //stringBuffer.setLength(0);
-            if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && !subjectReady && subjectEnabled) {
-                inSubject = true;
+            if (curLine.toLowerCase().startsWith("Subject:".toLowerCase()) && state==State.HEADER && subjectEnabled) {
+                state = State.SUBJECT;
                 curLine = "Subject:" + processSubject(curLine.substring(8));
-            } else if (inSubject && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
+            } else if (state == State.SUBJECT && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
                 curLine = processSubject(curLine) + "\r\n";
-            } else if (inSubject) {
-                inSubject = false;
-                subjectReady = true;
-            } else if (curLine.equals("\r\n") && !inImageHeader) {
-                inBody = true;
-                subjectReady = true;
-            } else if (isImageHeader(curLine) && !inImageHeader && inBody && imageEnabled) {
-                inImageHeader = true;
-            } else if (inImageHeader && curLine.equals("\r\n")) {
-                inImage = true;
-                inImageHeader = false;
-            } else if (inImage && !curLine.startsWith("--")) {
+            } else if (state == State.SUBJECT) {
+                state = State.POST_SUBJECT;
+            } else if (curLine.equals("\r\n") && state == State.POST_SUBJECT) {
+                state = State.BODY;
+            } else if (isImageHeader(curLine) && state == State.BODY && imageEnabled) {
+                state = State.IMAGE_HEADER;
+            } else if (state == State.IMAGE_HEADER && curLine.equals("\r\n")) {
+               state = State.IMAGE;
+            } else if (state == State.IMAGE && !curLine.startsWith("--") && image.length()<=MAX_IMAGE_SIZE) {
                 image.append(curLine);
                 curLine = "";
-            } else if (inImage && curLine.startsWith("--")) {
-                inImage = false;
+            } else if (state == State.IMAGE && !curLine.startsWith("--") && image.length()>MAX_IMAGE_SIZE) {
+                state = State.BODY;
+                image.setLength(0);
+
+            } else if (state == State.IMAGE && curLine.startsWith("--")) {
+                state = State.BODY;
                 stringBuffer.append(processImage());
                 stringBuffer.append("\r\n"); //este capaz sobra
                 image.setLength(0);
