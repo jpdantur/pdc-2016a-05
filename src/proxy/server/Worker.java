@@ -55,9 +55,6 @@ public class Worker implements Runnable{
             serverTools.queue(new QueuedKey(((ProxyHandler)key.attachment()).getOtherKey(), SelectionKey.OP_WRITE));
             //e.printStackTrace();
         } catch (IOException e) {
-<<<<<<< HEAD
-            logger.debug(e.getStackTrace());
-=======
             ProxyHandler handler = ((ProxyHandler)key.attachment());
             if(handler.isClient()){
                 if(handler.getOtherKey() != null) {
@@ -79,7 +76,6 @@ public class Worker implements Runnable{
                 e1.printStackTrace();
             }
             key.cancel();
->>>>>>> Multiplexor
         }
         //System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
