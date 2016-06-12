@@ -98,6 +98,7 @@ public class AdministratorProtocol implements TCPProtocol {
             clntChan.write(buf);
 
             if(sendResp.contains(config.getConfiguration().getGbyeMsg())) {
+                this.showWellcomeMsg = true;
                 logger.info("Close administrator.");
                 clntChan.close();
                 return;
@@ -215,12 +216,12 @@ public class AdministratorProtocol implements TCPProtocol {
         if(value.equals("yes")){
             this.leet = true;
             this.config.getConfiguration().setLeet(this.leet);
-            System.out.println(this.config.getConfiguration().getLeet());
+            //System.out.println(this.config.getConfiguration().getLeet());
             return 0;
         } else if(value.equals("no")){
             this.leet = false;
             this.config.getConfiguration().setLeet(this.leet);
-            System.out.println(this.config.getConfiguration().getLeet());
+            //System.out.println(this.config.getConfiguration().getLeet());
             return 0;
         }
         return 1;

@@ -14,9 +14,9 @@ public class Statistics {
     }
 
     public static Statistics getInstance() {
-        bytesTransferred = new AtomicLong(0);
-        accesses = new AtomicLong(0);
         if(instance == null) {
+            bytesTransferred = new AtomicLong(0);
+            accesses = new AtomicLong(0);
             instance = new Statistics();
         }
         return instance;
@@ -26,8 +26,8 @@ public class Statistics {
         return bytesTransferred.get();
     }
 
-    public void addBytesTransferred(long bytesTransferred) {
-        Statistics.bytesTransferred.addAndGet(bytesTransferred);
+    public void addBytesTransferred(long bytesTrans) {
+        Statistics.bytesTransferred.addAndGet(bytesTrans);
     }
 
     public long getAccesses() {
@@ -37,6 +37,4 @@ public class Statistics {
     public void addAccess() {
         Statistics.accesses.incrementAndGet();
     }
-
-
 }

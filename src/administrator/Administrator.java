@@ -64,6 +64,7 @@ public class Administrator implements Runnable{
                 }
             }
         }catch(IOException ioe) {
+            logger.debug(ioe.getStackTrace());
             //do something
         }
 
