@@ -31,8 +31,8 @@ public class PopParser {
     private boolean inImageHeader = false;
     private String imageFormat;
     private boolean inBody = false;
-    private boolean imageEnabled;
-    private boolean subjectEnabled;
+    private boolean imageEnabled = true;
+    private boolean subjectEnabled = true;
 
 
     public void setSubjectEnabled(boolean subjectEnabled) {

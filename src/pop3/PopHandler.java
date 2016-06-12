@@ -15,7 +15,12 @@ public class PopHandler extends ConcurrentProxyHandler {
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
     private Queue<TYPE> typeQueue;
-    private Pattern userPattern = Pattern.compile("USER ([^ \t]+)\r?");
+    private Pattern userPattern = Pattern.compile("[U|u][S|s][E|e][R|r] ?(.*)\r?");
+    private Pattern capaPattern = Pattern.compile("CAPA*\r?");
+    private Pattern passPattern = Pattern.compile("[P|p][A|a][S|s][S|s] ?(.*)\r?");
+    private Pattern quitPattern = Pattern.compile("[Q|q][U|u][I|i][T|t] ?(.*)\r?");
+
+    private int serverResponses = 0;
 
     private int attempts = 0;
     private final int MAX_ATTEMPTS = 10;
@@ -40,6 +45,19 @@ public class PopHandler extends ConcurrentProxyHandler {
                 identifyType(index);
                 return false;
             }
+            else if(((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null){
+                serverResponses++;
+                if(this.getStringBuffer().charAt(0)=='-'){
+                    this.setWrongPass(true);
+                    ByteBuffer bb = ByteBuffer.wrap((this.getStringBuffer().substring(0, index) + "\n").getBytes());
+                    bb.compact();
+                    ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
+                }
+                else if(this.getStringBuffer().charAt(0)=='+' && serverResponses == 3){
+                    this.setFinishConnect(true);
+                }
+            }
+
             if(this.type == TYPE.UNKOWN){
                 TYPE aux = typeQueue.poll();
                 if(aux == null) {
@@ -47,7 +65,7 @@ public class PopHandler extends ConcurrentProxyHandler {
                 }
                 else {
                     this.type = aux;
-                    if(this.getStringBuffer().charAt(0)=='-'){
+                    if (this.getStringBuffer().charAt(0) == '-') {
                         this.type = TYPE.SAME;
                     }
                 }
@@ -85,10 +103,19 @@ public class PopHandler extends ConcurrentProxyHandler {
         int length = this.getStringBuffer().length();
 
         if(this.getStringBuffer().indexOf("\r\n.\r\n")!=-1){
+<<<<<<< HEAD
             //System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
             //System.out.println("SETEO UNKOWN - RESET HANDLER");
+=======
+            this.popParser.resetFlags();
+            System.out.println("SETEO UNKOWN - RESET HANDLER");
+            this.type = TYPE.UNKOWN;
+        }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
+            this.popParser.resetFlags();
+            System.out.println("SETEO UNKOWN - RESET HANDLER");
+>>>>>>> Multiplexor
             this.type = TYPE.UNKOWN;
         }
         this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
@@ -105,6 +132,7 @@ public class PopHandler extends ConcurrentProxyHandler {
     }
 
     private void identifyType(int index) {
+<<<<<<< HEAD
         String buffer = this.getStringBuffer().substring(0, index);
         buffer = buffer.toUpperCase();
 //        Matcher userMatcher = userPattern.matcher(buffer);
@@ -144,6 +172,82 @@ public class PopHandler extends ConcurrentProxyHandler {
 //            this.type = TYPE.SAME;
 //            return;
 //        }
+=======
+        String originalBuffer = this.getStringBuffer().substring(0, index);
+        String buffer = originalBuffer.toUpperCase();
+        Matcher userMatcher = userPattern.matcher(originalBuffer);
+        Matcher capaMatcher = capaPattern.matcher(buffer);
+        Matcher passMatcher = passPattern.matcher(originalBuffer);
+        Matcher quitMatcher = quitPattern.matcher(originalBuffer);
+
+        System.out.println("|"+buffer +"|");
+
+        if(getOtherKey() == null) {
+            if(userMatcher.matches()){
+                attempts = 0;
+                if(userMatcher.groupCount() > 0) {
+                    this.setUser(userMatcher.group(1));
+                }
+                else{
+                    this.setUser("");
+                }
+                ByteBuffer bb = ByteBuffer.wrap(("+OK\r\n").getBytes());
+                bb.compact();
+                this.setWriteBuffer(bb);
+
+                System.out.println("el usuario es: |" + this.getUser() + "|");
+
+                System.out.println("----------------  " + this.getUser() + "  --------------");
+
+            }
+            else if(passMatcher.matches()){
+                attempts = 0;
+                if(this.getUser() != null){
+                    if (passMatcher.groupCount() > 0) {
+                        this.setPass(passMatcher.group(1));
+                    } else {
+                        this.setPass("");
+                    }
+                    System.out.println("la contraseña es: |" + this.getPass() + "|");
+                    this.setReadyToConnect(true);
+                }else {
+                    ByteBuffer bb = ByteBuffer.wrap(("-ERR No username given.\r\n").getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                }
+            }
+            else if(capaMatcher.matches()){
+                attempts = 0;
+                ByteBuffer bb = ByteBuffer.wrap(("+OK\r\nCAPA\r\nUSER\r\n.\r\n").getBytes());
+                bb.compact();
+                this.setWriteBuffer(bb);
+            }
+            else if(quitMatcher.matches()) {
+                attempts = 0;
+                ByteBuffer bb = ByteBuffer.wrap(("+OK Logging out.\r\n").getBytes());
+                bb.compact();
+                this.setWriteBuffer(bb);
+                this.setToClose(true);
+            }else{
+                attempts++;
+                if(attempts == MAX_ATTEMPTS){
+                    ByteBuffer bb = ByteBuffer.wrap("-ERR Too many unknown commands - Closing Connection.\r\n".getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                    this.setToClose(true);
+                }
+                else{
+                    ByteBuffer bb = ByteBuffer.wrap(("-ERR Unknown command: " + buffer + "\r\n").getBytes());
+                    bb.compact();
+                    this.setWriteBuffer(bb);
+                }
+            }
+            getStringBuffer().setLength(0);
+
+            this.type = TYPE.SAME;
+            return;
+        }
+>>>>>>> Multiplexor
         if(buffer.contains("RETR") || buffer.contains("TOP")){
             ((PopHandler)this.getOtherHandler()).setModify();
         }else if(buffer.contains("LIST")){

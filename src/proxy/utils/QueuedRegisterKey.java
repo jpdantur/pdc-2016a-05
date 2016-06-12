@@ -37,9 +37,9 @@ public class QueuedRegisterKey implements KeyModifier {
         try {
             SelectionKey key = socketChannel.register(selector, interest, handler);
             handler.setOtherKey(otherKey);
-            if(otherKey != null) {
+            /*if(otherKey != null) {
                 ((ProxyHandler) (otherKey.attachment())).setOtherKey(key);
-            }
+            }*/
         } catch (ClosedChannelException e) {
             e.printStackTrace();
         }

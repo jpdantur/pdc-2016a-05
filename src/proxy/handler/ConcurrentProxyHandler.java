@@ -20,12 +20,15 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     private boolean terminated;
     private boolean isClient;
+
     private boolean readyToConnect;
-
     private String user = null;
+    private String pass = null;
     private boolean toClose = false;
+    private boolean finishConnect = false;
+    private boolean wrongPass = false;
 
-    private static final int BUFFER_SIZE = 1024;
+    private static final int BUFFER_SIZE = 1;
 
     public ConcurrentProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -49,9 +52,12 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public ByteBuffer getWriteBuffer(){
         ByteBuffer buffer = writeQueue.pollFirst();
+<<<<<<< HEAD
         //System.out.println("el valor es: ");
         //TODO despues de borrar emails y luego hacer quit, intellj me lanzo un nullpointer y en terminal no se temrina la conexion
         //System.out.println( new String(buffer.array()));
+=======
+>>>>>>> Multiplexor
         return buffer;
     }
 
@@ -124,8 +130,15 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public void terminate() {
+<<<<<<< HEAD
         //System.out.println("SET TERMINATED");
         ((ConcurrentProxyHandler)this.getOtherKey().attachment()).setTerminated(true);
+=======
+        System.out.println("SET TERMINATED");
+        if(otherKey != null) {
+            ((ConcurrentProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
+        }
+>>>>>>> Multiplexor
     }
 
     public void appendBuffer() {
@@ -143,15 +156,26 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         //System.out.println(stringBuffer.toString());
     }
 
-    public void transferData() {
+    public int transferData() {
 
         ByteBuffer otherWriteBuffer = ByteBuffer.allocate(stringBuffer.length());
 
         otherWriteBuffer.put(stringBuffer.toString().getBytes());
 
+<<<<<<< HEAD
         ((ConcurrentProxyHandler) getOtherKey().attachment()).setWriteBuffer(otherWriteBuffer);
         //System.out.println("SETEO 0 ");
+=======
+        ConcurrentProxyHandler otherHandler = ((ConcurrentProxyHandler) getOtherKey().attachment());
+
+        if(((ConcurrentProxyHandler)otherKey.attachment()).getOtherKey() != null){
+            otherHandler.setWriteBuffer(otherWriteBuffer);
+        }
+
+        System.out.println("SETEO 0 ");
+>>>>>>> Multiplexor
         stringBuffer.setLength(0);
+        return writeQueue.size();
     }
 
     public boolean getReadyToConnect(){
@@ -169,12 +193,36 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         this.user = user;
     }
 
+    public String getPass(){
+        return this.pass;
+    }
+
+    public void setPass(String pass){
+        this.pass = pass;
+    }
+
     public boolean getToClose(){
         return toClose;
     }
 
     public void setToClose(boolean toClose){
         this.toClose = toClose;
+    }
+
+    public boolean getFinishConnect(){
+        return finishConnect;
+    }
+
+    public void setFinishConnect(boolean finishConnect){
+        this.finishConnect = finishConnect;
+    }
+
+    public boolean getWrongPass(){
+        return this.wrongPass;
+    }
+
+    public void setWrongPass(boolean wrongPass){
+        this.wrongPass = wrongPass;
     }
 
 }
