@@ -24,7 +24,7 @@ public class AdministratorProtocol implements TCPProtocol {
 
     private static String OKresp = "+OK ";
     private static String ERRresp = "-ERR";
-    private static String login = "+Logged in\n";
+    private static String login = "+Logged in\r\n";
     private boolean showWellcomeMsg = true;
     private boolean isLogin = false;
     private String adminPass;
@@ -43,9 +43,7 @@ public class AdministratorProtocol implements TCPProtocol {
 
     public void handleAccept(SelectionKey key) throws IOException {
         SocketChannel clntChan = ((ServerSocketChannel) key.channel()).accept();
-        clntChan.configureBlocking(false); // Must be nonblocking to register
-        // Register the selector with new channel for read and attach byte
-        // buffer
+        clntChan.configureBlocking(false);
         stringBuffer.append(config.getConfiguration().getWellcome() + "\n");
         clntChan.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(bufSize));
     }
@@ -103,20 +101,13 @@ public class AdministratorProtocol implements TCPProtocol {
                 return;
             }
 
-            if (!buf.hasRemaining()) { // Buffer completely written?
-                // Nothing left, so no longer interested in writes
+            if (!buf.hasRemaining()) {
                 key.interestOps(SelectionKey.OP_READ);
             }
             buf.compact(); // Make room for more data to be read in
         } else {
             key.interestOps(SelectionKey.OP_READ);
         }
-        /*
-         * Channel is available for writing, and key is valid (i.e., client
-         * channel not closed).
-         */
-        // Retrieve data read earlier
-
     }
 
     private void setUser(String user) {
@@ -141,25 +132,25 @@ public class AdministratorProtocol implements TCPProtocol {
             return OKresp + input;
         }
 
-        if(input.toLowerCase().equals("quit\n"))
+        if(input.toLowerCase().equals("quit\r\n") || input.toLowerCase().equals("quit\n"))
             return getQuit();
 
-        if(input.toLowerCase().equals("capa\n"))
+        if(input.toLowerCase().equals("capa\r\n") || input.toLowerCase().equals("capa\n"))
             return OKresp+getCapa();
 
-        if(input.toLowerCase().equals("stat\n"))
+        if(input.toLowerCase().equals("stat\r\n") || input.toLowerCase().equals("stat\n"))
             if(isLogin){
                 return OKresp+getStat();
             }
             else
-                return ERRresp+" Login first\n";
+                return ERRresp+" Login first\r\n";
 
         String pattern = "([A-Za-z]+?)\\s";
         Pattern r = Pattern.compile(pattern);
         String command;
-        // Now create matcher object.
         Matcher m = r.matcher(input);
-        input = input.replace("\n","");
+        input = input.replace("\r\n","").replace("\n","");
+
         if (m.find()) {
             command = m.group().replace(" ", "");
 
@@ -176,36 +167,36 @@ public class AdministratorProtocol implements TCPProtocol {
                         return login;
                     } else {
                         deleteUserPass();
-                        return ERRresp+" USER or PASS incorrect.\n";
+                        return ERRresp+" USER or PASS incorrect.\r\n";
                     }
                 case "leet":
                     if(this.isLogin) {
                         int exit = setL33t(input.replace(command+" ", ""));
                         if(exit == 0) {
-                            return OKresp + "\n";
+                            return OKresp + "\r\n";
                         } else {
-                            return ERRresp+" Input not valid.\n";
+                            return ERRresp+" Input not valid.\r\n";
                         }
                     }else {
-                        return ERRresp+" Login first.\n";
+                        return ERRresp+" Login first.\r\n";
                     }
                 case "rotation":
                     if(this.isLogin) {
                         int exit = setRotation(input.replace(command+" ", ""));
                         if(exit == 0) {
-                            return OKresp + "\n";
+                            return OKresp + "\r\n";
                         } else {
-                            return ERRresp+" Input not valid.\n";
+                            return ERRresp+" Input not valid.\r\n";
                         }
                     }else {
-                        return ERRresp+" Login first.\n";
+                        return ERRresp+" Login first.\r\n";
                     }
                 default:
-                    return ERRresp+" Command not valid.\n";
+                    return ERRresp+" Command not valid.\r\n";
             }
             return OKresp +"\n";
         } else {
-            return ERRresp+" Command not found.\n";
+            return ERRresp+" Command not found.\r\n";
         }
     }
 
@@ -246,29 +237,31 @@ public class AdministratorProtocol implements TCPProtocol {
     }
 
     private String getStat() {
-        return "Buffer size: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
-                "Leet: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\n" +
-                "Rotation: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\n" +
-                "Administrator Port: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
-                "Proxy Port: " + this.config.getConfiguration().getServerPort() + "\n" +
-                "BytesTransferred: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
-                "Access: " + stat.getAccesses() + "\n" +
-                ".\n";
+        return "BUFFER SIZE: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
+                "LEET: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\n" +
+                "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\n" +
+                "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
+                "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\n" +
+                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
+                "ACCESS: " + stat.getAccesses() +
+                "\r\n.\r\n";
     }
 
     private String getQuit() {
-        return OKresp + config.getConfiguration().getGbyeMsg() + "\n";
+        this.isLogin = false;
+        return OKresp + config.getConfiguration().getGbyeMsg() + "\r\n";
     }
 
     private String getCapa() {
-        return "COMMANDS\n" +
-                "USER\n" +
-                "PASS\n" +
-                "LEET\n" +
-                "ROTATION\n" +
-                "BUFFERSIZE\n" +
-                "STAT\n" + 
-                ".\n";
+        if(!isLogin)
+            return "COMMANDS:\n" +
+                    "USER\n" +
+                    "PASS\r\n.\r\n";
+        else
+            return "COMMANDS:\n" +
+                    "LEET\n" +
+                    "ROTATION\n" +
+                    "STAT\r\n.\r\n";
     }
 
 //    private String Histogram() {
