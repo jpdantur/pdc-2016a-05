@@ -28,7 +28,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private boolean finishConnect = false;
     private boolean wrongPass = false;
 
-    private static final int BUFFER_SIZE = 1;
+    private static final int BUFFER_SIZE = 1                                                                                                    ;
 
     public ConcurrentProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -207,6 +207,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public void setWrongPass(boolean wrongPass){
         this.wrongPass = wrongPass;
+    }
+
+    public int writeBufferListSize(){
+        return this.writeQueue.size();
     }
 
 }

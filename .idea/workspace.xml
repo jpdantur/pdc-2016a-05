@@ -5,19 +5,15 @@
     <bookmark url="file://$PROJECT_DIR$/src/pop3/PopParser.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="se conecta con un servidor por defecto cuando se escribe user 'nombre usuario'">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopHandler.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopHandler.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopParser.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopParser.class" />
+    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ConcurrentProxyHandler.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ConcurrentProxyHandler.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ProxyHandler.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ProxyHandler.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/Worker.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/Worker.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopHandler.java" afterPath="$PROJECT_DIR$/src/pop3/PopHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopParser.java" afterPath="$PROJECT_DIR$/src/pop3/PopParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java" afterPath="$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" afterPath="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/server/Worker.java" afterPath="$PROJECT_DIR$/src/proxy/server/Worker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/utils/QueuedRegisterKey.java" afterPath="$PROJECT_DIR$/src/proxy/utils/QueuedRegisterKey.java" />
     </list>
     <ignored path="ProtosTpe.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,8 +39,24 @@
       <file leaf-file-name="PopHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pop3/PopHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
+            <state relative-caret-position="1872">
               <caret line="109" column="40" selection-start-line="109" selection-start-column="40" selection-end-line="109" selection-end-column="40" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#8042#8043#0" expanded="false" />
+                <element signature="e#8081#8082#0" expanded="false" />
+                <element signature="e#8130#8131#0" expanded="false" />
+                <element signature="e#8189#8190#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Worker.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="468">
+              <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -53,18 +65,18 @@
       <file leaf-file-name="PopParser.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-396">
-              <caret line="34" column="41" selection-start-line="34" selection-start-column="41" selection-end-line="34" selection-end-column="41" />
+            <state relative-caret-position="137">
+              <caret line="70" column="75" selection-start-line="70" selection-start-column="75" selection-end-line="70" selection-end-column="75" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Worker.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
+      <file leaf-file-name="QueuedKey.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/proxy/utils/QueuedKey.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3996">
-              <caret line="231" column="8" selection-start-line="231" selection-start-column="8" selection-end-line="231" selection-end-column="8" />
+            <state relative-caret-position="270">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -73,11 +85,9 @@
       <file leaf-file-name="ProxyHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
-              <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
+            <state relative-caret-position="314">
+              <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -85,24 +95,10 @@
       <file leaf-file-name="ConcurrentProxyHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1548">
-              <caret line="105" column="0" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+            <state relative-caret-position="126">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#1359#1360#0" expanded="false" />
-                <element signature="e#1397#1398#0" expanded="false" />
-                <element signature="e#2432#2433#0" expanded="false" />
-                <element signature="e#2468#2469#0" expanded="false" />
-                <element signature="e#2762#2763#0" expanded="false" />
-                <element signature="e#2795#2796#0" expanded="false" />
-                <element signature="e#4446#4447#0" expanded="false" />
-                <element signature="e#4483#4484#0" expanded="false" />
-                <element signature="e#4542#4543#0" expanded="false" />
-                <element signature="e#4594#4595#0" expanded="false" />
-                <element signature="e#4889#4890#0" expanded="false" />
-                <element signature="e#4919#4920#0" expanded="false" />
-                <element signature="e#4965#4966#0" expanded="false" />
-                <element signature="e#5003#5004#0" expanded="false" />
+                <element signature="e#1336#1337#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -111,12 +107,10 @@
       <file leaf-file-name="ProxyServer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
-              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+            <state relative-caret-position="1152">
+              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="false" />
-                <element signature="e#2361#2362#0" expanded="false" />
-                <element signature="e#2410#2411#0" expanded="false" />
                 <element signature="e#2467#2468#0" expanded="false" />
                 <element signature="e#2512#2513#0" expanded="false" />
               </folding>
@@ -179,9 +173,9 @@
         <option value="$PROJECT_DIR$/src/proxy/utils/QueuedRegister.java" />
         <option value="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
         <option value="$PROJECT_DIR$/src/proxy/utils/QueuedRegisterKey.java" />
+        <option value="$PROJECT_DIR$/src/pop3/PopHandler.java" />
         <option value="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" />
         <option value="$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java" />
-        <option value="$PROJECT_DIR$/src/pop3/PopHandler.java" />
         <option value="$PROJECT_DIR$/src/pop3/PopParser.java" />
         <option value="$PROJECT_DIR$/src/proxy/server/Worker.java" />
       </list>
@@ -200,9 +194,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="24" />
+    <option name="y" value="-4" />
     <option name="width" value="1280" />
-    <option name="height" value="696" />
+    <option name="height" value="724" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -229,8 +223,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -368,6 +360,8 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -974,7 +968,8 @@
       <workItem from="1465656418624" duration="1072000" />
       <workItem from="1465657793904" duration="4712000" />
       <workItem from="1465690991658" duration="11157000" />
-      <workItem from="1465744053269" duration="1167000" />
+      <workItem from="1465744053269" duration="7732000" />
+      <workItem from="1465757930962" duration="3440000" />
     </task>
     <task id="LOCAL-00001" summary="Parser Initial Commit (and changed sdk to Java 8)">
       <created>1465078877954</created>
@@ -1018,14 +1013,21 @@
       <option name="project" value="LOCAL" />
       <updated>1465616610215</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="multiplexing casi listo, falta que vea en un archivo a que servidor ir.">
+      <created>1465745273709</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1465745273709</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="92503000" />
+    <option name="totallyTimeSpent" value="102508000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1280" height="696" extended-state="6" />
+    <frame x="0" y="-4" width="1280" height="724" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1036,7 +1038,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2552167" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23916534" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1076,11 +1078,12 @@
     <MESSAGE value="Pop parser Beta 1.1 (Lo cambie para que entre al servidor de pop de fibertel asi q si van a probar cambienlo de nuevo)" />
     <MESSAGE value="No more writes al pedou" />
     <MESSAGE value="se conecta con un servidor por defecto cuando se escribe user 'nombre usuario'" />
-    <option name="LAST_COMMIT_MESSAGE" value="se conecta con un servidor por defecto cuando se escribe user 'nombre usuario'" />
+    <MESSAGE value="multiplexing casi listo, falta que vea en un archivo a que servidor ir." />
+    <option name="LAST_COMMIT_MESSAGE" value="multiplexing casi listo, falta que vea en un archivo a que servidor ir." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="21" />
+      <option name="time" value="22" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1129,7 +1132,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#8042#8043#0" expanded="false" />
+            <element signature="e#8081#8082#0" expanded="false" />
+            <element signature="e#8130#8131#0" expanded="false" />
+            <element signature="e#8189#8190#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1180,7 +1189,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#8042#8043#0" expanded="false" />
+            <element signature="e#8081#8082#0" expanded="false" />
+            <element signature="e#8130#8131#0" expanded="false" />
+            <element signature="e#8189#8190#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1259,14 +1274,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/utils/QueuedKey.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/proxy/utils/QueuedRegister.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
@@ -1285,55 +1292,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
-          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1548">
-          <caret line="105" column="0" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1359#1360#0" expanded="false" />
-            <element signature="e#1397#1398#0" expanded="false" />
-            <element signature="e#2432#2433#0" expanded="false" />
-            <element signature="e#2468#2469#0" expanded="false" />
-            <element signature="e#2762#2763#0" expanded="false" />
-            <element signature="e#2795#2796#0" expanded="false" />
-            <element signature="e#4446#4447#0" expanded="false" />
-            <element signature="e#4483#4484#0" expanded="false" />
-            <element signature="e#4542#4543#0" expanded="false" />
-            <element signature="e#4594#4595#0" expanded="false" />
-            <element signature="e#4889#4890#0" expanded="false" />
-            <element signature="e#4919#4920#0" expanded="false" />
-            <element signature="e#4965#4966#0" expanded="false" />
-            <element signature="e#5003#5004#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
-          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2361#2362#0" expanded="false" />
-            <element signature="e#2410#2411#0" expanded="false" />
-            <element signature="e#2467#2468#0" expanded="false" />
-            <element signature="e#2512#2513#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1347,26 +1305,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
+    <entry file="file://$PROJECT_DIR$/src/proxy/utils/QueuedKey.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-396">
-          <caret line="34" column="41" selection-start-line="34" selection-start-column="41" selection-end-line="34" selection-end-column="41" />
+        <state relative-caret-position="270">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1152">
+          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#2467#2468#0" expanded="false" />
+            <element signature="e#2512#2513#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/pop3/PopHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
+        <state relative-caret-position="1872">
           <caret line="109" column="40" selection-start-line="109" selection-start-column="40" selection-end-line="109" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#8042#8043#0" expanded="false" />
+            <element signature="e#8081#8082#0" expanded="false" />
+            <element signature="e#8130#8131#0" expanded="false" />
+            <element signature="e#8189#8190#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding>
+            <element signature="e#1336#1337#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="70" column="75" selection-start-line="70" selection-start-column="75" selection-end-line="70" selection-end-column="75" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3996">
-          <caret line="231" column="8" selection-start-line="231" selection-start-column="8" selection-end-line="231" selection-end-column="8" />
+        <state relative-caret-position="468">
+          <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
           <folding />
         </state>
       </provider>
