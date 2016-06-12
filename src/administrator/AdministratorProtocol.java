@@ -27,7 +27,6 @@ public class AdministratorProtocol implements TCPProtocol {
     private static String login = "+Logged in\n";
     private boolean showWellcomeMsg = true;
     private boolean isLogin = false;
-    private boolean leet = false;
     private String adminPass;
     private String adminUser;
 
@@ -190,6 +189,17 @@ public class AdministratorProtocol implements TCPProtocol {
                     }else {
                         return ERRresp+" Login first.\n";
                     }
+                case "rotation":
+                    if(this.isLogin) {
+                        int exit = setRotation(input.replace(command+" ", ""));
+                        if(exit == 0) {
+                            return OKresp + "\n";
+                        } else {
+                            return ERRresp+" Input not valid.\n";
+                        }
+                    }else {
+                        return ERRresp+" Login first.\n";
+                    }
                 default:
                     return ERRresp+" Command not valid.\n";
             }
@@ -214,14 +224,22 @@ public class AdministratorProtocol implements TCPProtocol {
     private int setL33t(String input) {
         String value = input.toLowerCase();
         if(value.equals("yes")){
-            this.leet = true;
-            this.config.getConfiguration().setLeet(this.leet);
-            //System.out.println(this.config.getConfiguration().getLeet());
+            this.config.getConfiguration().setLeet(true);
             return 0;
         } else if(value.equals("no")){
-            this.leet = false;
-            this.config.getConfiguration().setLeet(this.leet);
-            //System.out.println(this.config.getConfiguration().getLeet());
+            this.config.getConfiguration().setLeet(false);
+            return 0;
+        }
+        return 1;
+    }
+
+    private int setRotation(String input) {
+        String value = input.toLowerCase();
+        if(value.equals("yes")){
+            this.config.getConfiguration().setRotation(true);
+            return 0;
+        } else if(value.equals("no")){
+            this.config.getConfiguration().setRotation(false);
             return 0;
         }
         return 1;
@@ -229,8 +247,8 @@ public class AdministratorProtocol implements TCPProtocol {
 
     private String getStat() {
         return "Buffer size: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
-                "Leet: " + this.config.getConfiguration().getLeet() + "\n" +
-                "Rotation: " + this.config.getConfiguration().getRotation() + "\n" +
+                "Leet: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\n" +
+                "Rotation: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\n" +
                 "Administrator Port: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
                 "Proxy Port: " + this.config.getConfiguration().getServerPort() + "\n" +
                 "BytesTransferred: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
@@ -248,7 +266,7 @@ public class AdministratorProtocol implements TCPProtocol {
                 "PASS\n" +
                 "LEET\n" +
                 "BUFFERSIZE\n" +
-                "STAT\n" +
+                "STAT\n" + 
                 ".\n";
     }
 
