@@ -3,6 +3,7 @@ package proxy.server;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
 
+import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -101,8 +102,23 @@ public class Worker implements Runnable{
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if(socketChannel.finishConnect()){
-            serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
-            SelectionKey otherKey = ((ProxyHandler)key.attachment()).getOtherKey();
+            ProxyHandler handler = ((ProxyHandler)key.attachment());
+            SelectionKey otherKey = handler.getOtherKey();
+            ProxyHandler otherHandler = ((ProxyHandler)otherKey.attachment());
+            String user = otherHandler.getUser();
+            String pass = otherHandler.getPass();
+
+            ByteBuffer bbUser = ByteBuffer.wrap(("user " + user + "\r\n").getBytes());
+            bbUser.compact();
+            handler.setWriteBuffer(bbUser);
+
+            ByteBuffer bbPass = ByteBuffer.wrap(("pass " + pass + "\r\n").getBytes());
+            bbPass.compact();
+            handler.setWriteBuffer(bbPass);
+
+
+
+            serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
             serverTools.queue(new QueuedKey(otherKey, SelectionKey.OP_READ));
         }else{
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_CONNECT));
@@ -118,53 +134,70 @@ public class Worker implements Runnable{
 
         long bytesRead = channel.read(buffer);
 
-        if(bytesRead == 0){
+        if (bytesRead == 0) {
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             return;
         }
 
-        if(bytesRead>0){
+        if (bytesRead > 0) {
             handler.appendBuffer();
 
-            if(handler.analizeData()){
-               // handler.appendBuffer();
-                if(handler.transformBufferDone() && handler.getOtherKey() != null){
+            if (handler.analizeData()) {
+                // handler.appendBuffer();
+
+                if (handler.transformBufferDone() && handler.getOtherKey() != null) {
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
                 }
-            }else{
-                if(handler.getOtherKey() != null) {
+            } else {
+                if(handler.getFinishConnect()){
+                    ((ProxyHandler)handler.getOtherKey().attachment()).setOtherKey(key);
+                } else if(handler.getWrongPass()){
+
+                    handler.setWrongPass(false);
+                    ProxyHandler otherHandler = ((ProxyHandler)handler.getOtherKey().attachment());
+                    otherHandler.setUser(null);
+                    otherHandler.setPass(null);
+                    serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+                    handler.setOtherKey(null);
+                    channel.close();
+                    key.cancel();
+                    return;
+                }
+                if (handler.getOtherKey() != null) {
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
-                }
-                else if(!handler.getReadyToConnect()){
+                } else if (!handler.getReadyToConnect()) {
                     serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
+                    if(handler.getToClose()){
+                        handler.setTerminated(true);
+                    }
                     return;
                 }
             }
 
-            if(handler.getReadyToConnect()){
+            if (handler.getReadyToConnect()) {
 
                 handler.setReadyToConnect(false);
 
-                //me fijo a que servidor
+                //falta que me fije a que servidor !!!!
                 SocketChannel proxyAndServer = SocketChannel.open();
                 proxyAndServer.configureBlocking(false);
-                proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+                proxyAndServer.connect(new InetSocketAddress("localhost", 110));
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
                 serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));
             }
 
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
-        }else{
+        } else {
             //if(handler.hasWrittenData()){
-                System.out.println("-** Setting Terminated **-");
-                //handler.transferData();
-                handler.terminate();
-                serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
+            System.out.println("-** Setting Terminated **-");
+            //handler.transferData();
+            handler.terminate();
+            serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
             /*}else{
                 System.out.println("-*- Closing Channels (read) -*-");
                 handler.getOtherKey().channel().close();

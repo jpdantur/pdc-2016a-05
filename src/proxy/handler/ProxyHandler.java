@@ -21,7 +21,7 @@ public interface ProxyHandler {
     boolean hasWrittenData();
     void terminate();
     void appendBuffer();
-    void transferData();
+    int transferData();
     boolean isClient();
     void setClient();
     boolean moreWriteableData(ByteBuffer byteBuffer);
@@ -31,6 +31,12 @@ public interface ProxyHandler {
     void setReadyToConnect(boolean readyToConnect);
     String getUser();
     void setUser(String user);
+    String getPass();
+    void setPass(String pass);
+    boolean getFinishConnect();
+    void setFinishConnect(boolean finishConnect);
+    boolean getWrongPass();
+    void setWrongPass(boolean wrongPass);
 
     boolean getToClose();
     void setToClose(boolean setToClose);
