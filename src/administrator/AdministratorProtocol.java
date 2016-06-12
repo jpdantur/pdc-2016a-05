@@ -47,7 +47,7 @@ public class AdministratorProtocol implements TCPProtocol {
         clntChan.configureBlocking(false); // Must be nonblocking to register
         // Register the selector with new channel for read and attach byte
         // buffer
-        stringBuffer.append("HELLO USER\n");
+        stringBuffer.append(config.getConfiguration().getWellcome() + "\n");
         clntChan.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(bufSize));
     }
 
@@ -97,7 +97,7 @@ public class AdministratorProtocol implements TCPProtocol {
             buf = ByteBuffer.wrap(sendResp.getBytes());
             clntChan.write(buf);
 
-            if(sendResp.contains("goodbye")) {
+            if(sendResp.contains(config.getConfiguration().getGbyeMsg())) {
                 logger.info("Close administrator.");
                 clntChan.close();
                 return;
@@ -144,8 +144,8 @@ public class AdministratorProtocol implements TCPProtocol {
         if(input.toLowerCase().equals("quit\n"))
             return getQuit();
 
-        if(input.toLowerCase().equals("help\n"))
-            return OKresp+getHelp();
+        if(input.toLowerCase().equals("capa\n"))
+            return OKresp+getCapa();
 
         if(input.toLowerCase().equals("stat\n"))
             if(isLogin){
@@ -172,7 +172,7 @@ public class AdministratorProtocol implements TCPProtocol {
                     setPass(input.replace(command+" ", ""));
                     this.isLogin = checkUserPassAdmin();
                     if(isLogin) {
-                        logger.info("Manager logged in.");
+                        logger.info("Administrator logged in.");
                         return login;
                     } else {
                         deleteUserPass();
@@ -229,23 +229,25 @@ public class AdministratorProtocol implements TCPProtocol {
     private String getStat() {
         return "Buffer size: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
                 "Leet: " + this.config.getConfiguration().getLeet() + "\n" +
-                "Manager Port: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
+                "Rotation: " + this.config.getConfiguration().getRotation() + "\n" +
+                "Administrator Port: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
                 "Proxy Port: " + this.config.getConfiguration().getServerPort() + "\n" +
                 "BytesTransferred: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
-                "Access: " + stat.getAccesses() + "\n";
+                "Access: " + stat.getAccesses() + "\n" +
+                ".\n";
     }
 
     private String getQuit() {
-        return OKresp + "goodbye!\n";
+        return OKresp + config.getConfiguration().getGbyeMsg() + "\n";
     }
 
-    private String getHelp() {
+    private String getCapa() {
         return "COMMANDS\n" +
-                " USER\n" +
-                " PASS\n" +
-                " LEET\n" +
-                " BUFFERSIZE\n" +
-                " STAT\n" +
+                "USER\n" +
+                "PASS\n" +
+                "LEET\n" +
+                "BUFFERSIZE\n" +
+                "STAT\n" +
                 ".\n";
     }
 

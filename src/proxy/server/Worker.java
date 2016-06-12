@@ -1,5 +1,6 @@
 package proxy.server;
 
+import administrator.Configuration;
 import administrator.Statistics;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
@@ -19,11 +20,13 @@ public class Worker implements Runnable{
     private SelectionKey key;
     private ServerTools serverTools;
     private Statistics stat;
+    private Configuration config;
 
     public Worker(SelectionKey key, ServerTools serverTools){
         this.key = key;
         this.serverTools = serverTools;
         this.stat = Statistics.getInstance();
+        this.config = Configuration.getInstance();
     }
 
     @Override
@@ -103,7 +106,6 @@ public class Worker implements Runnable{
     private void handleConnect(SelectionKey key) throws IOException{
         System.out.println("---Handling Connect---");
 
-
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if(socketChannel.finishConnect()){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
@@ -160,7 +162,9 @@ public class Worker implements Runnable{
                 //me fijo a que servidor
                 SocketChannel proxyAndServer = SocketChannel.open();
                 proxyAndServer.configureBlocking(false);
-                proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
+                proxyAndServer.connect(new InetSocketAddress(config.getConfiguration().getServername(),
+                        config.getConfiguration().getPOP3port()));
+//              proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
                 serverTools.queue(new QueuedRegisterKey(SelectionKey.OP_CONNECT, proxyAndServer, key.selector(), handlerServer, key));

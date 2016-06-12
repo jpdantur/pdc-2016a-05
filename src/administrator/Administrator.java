@@ -11,18 +11,18 @@ import java.util.Iterator;
 /**
  * Created by matias on 6/5/16.
  */
-public class Manager implements Runnable{
-    private final static Logger logger = Logger.getLogger(Manager.class);
+public class Administrator implements Runnable{
+    private final static Logger logger = Logger.getLogger(Administrator.class);
     private static final int TIMEOUT = 3000; // Wait timeout (milliseconds)
     private static Configuration config;
 
-    public Manager() {
+    public Administrator() {
         config = Configuration.getInstance();
     }
 
     @Override
     public void run() {
-        logger.info("Manager is running.");
+        logger.info("Administrator is running.");
         try {
             // Create a selector to multiplex listening sockets and connections
             Selector selector = Selector.open();

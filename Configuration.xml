@@ -2,7 +2,7 @@
     <BufferSize>1024</BufferSize>
     <ServerPort>7070</ServerPort>
     <pop3Port>110</pop3Port>
-    <Servername>locahost</Servername>
+    <Servername>localhost</Servername>
     <L33t>false</L33t>
     <Rotation>false</Rotation>
     <Admin>
@@ -10,8 +10,8 @@
         <pass>1234</pass>
         <port>9999</port>
     </Admin>
-    <WellcomeMessage>+OK ProxyPOP3 ready.\r\n</WellcomeMessage>
-    <GoodByeMessage>+OK ProxyPOP3 says goodbye.\r\n</GoodByeMessage>
+    <WellcomeMessage>ProxyPOP3 ready.</WellcomeMessage>
+    <GoodByeMessage>ProxyPOP3 says goodbye.</GoodByeMessage>
     <Multiplexing-config>
         <Multiplex>
             <User>user</User>

@@ -1,6 +1,6 @@
 package main;
 
-import administrator.Manager;
+import administrator.Administrator;
 import pop3.PopHandlerBuilder;
 import proxy.server.ProxyServer;
 
@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         try {
 
-            Runnable manager = new Manager();
+            Runnable manager = new Administrator();
             new Thread(manager).start();
 
             ProxyServer server = new ProxyServer(new PopHandlerBuilder());
