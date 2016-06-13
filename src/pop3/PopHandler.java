@@ -78,13 +78,17 @@ public class PopHandler extends ConcurrentProxyHandler {
             return true;
         }
 
-        return type != TYPE.SAME;
+        return type != TYPE.SAME && type != TYPE.ML_SAME;
 
     }
 
     public boolean transformBufferDone(){
-        if(this.getStringBuffer().indexOf("\n")==-1)
-            return false;
+        if(this.getStringBuffer().indexOf("\n")==-1) {
+            if (this.getStringBuffer().length()<=1000)
+                return false;
+            this.type = TYPE.ML_SAME;
+            return true;
+        }
 
         //Si ya tengo todo para modificar, lo hago, y return true
         //Si no, return false
