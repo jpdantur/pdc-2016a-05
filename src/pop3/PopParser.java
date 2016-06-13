@@ -18,6 +18,7 @@ import org.apache.commons.codec.net.*;
 public class PopParser {
     private BCodec bCodec = new BCodec();
     private QCodec qCodec = new QCodec();
+    private StringBuilder commandTemp = new StringBuilder();
     private StringBuilder temp = new StringBuilder();
     private StringBuilder image = new StringBuilder();
     private String codedSubjectRegex = "([ \t]*)(=\\?(.+?)\\?(.+?)\\?(.+?)\\?=)\r\n";
@@ -25,6 +26,7 @@ public class PopParser {
     private String imageHeaderRegex = "^content-type:[ \\t]*image/(.*?);.*\r\n";
     private Pattern imageHeaderPattern = Pattern.compile(imageHeaderRegex, Pattern.CASE_INSENSITIVE);
     private Queue<StringBuilder> lineQueue = new LinkedList<>();
+    private Queue<StringBuilder> commandQueue = new LinkedList<>();
     private String imageFormat;
     private boolean imageEnabled;
     private boolean subjectEnabled;
@@ -102,9 +104,15 @@ public class PopParser {
     private String processImage() {
         Decoder decoder = Base64.getMimeDecoder();
         Encoder encoder = Base64.getMimeEncoder();
-        Image imageXT = new Image(decoder.decode(image.toString()));
-        imageXT.rotate(180);
-        return new String (encoder.encode(imageXT.getByteArray(mimeToImage(imageFormat))));
+        try {
+            Image imageXT = new Image(decoder.decode(image.toString()));
+            imageXT.rotate(180);
+            return new String(encoder.encode(imageXT.getByteArray(mimeToImage(imageFormat))));
+        } catch (IllegalArgumentException i)
+        {
+            i.printStackTrace();
+            return image.toString();
+        }
     }
 
     private String processSubject(String data) {
@@ -148,5 +156,25 @@ public class PopParser {
         list.put("png","PNG");
         list.put("vnd.wap.wbmp","WBMP");
         return list.get(format);
+    }
+
+    public void parseCommands(StringBuffer stringBuffer)
+    {
+        for (int i = 0; i<stringBuffer.length();i++)
+        {
+            commandTemp.append(stringBuffer.charAt(i));
+            if (stringBuffer.charAt(i)=='\n')
+            {
+                commandQueue.offer(commandTemp);
+                commandTemp = new StringBuilder();
+            }
+        }
+        stringBuffer.setLength(0);
+        while (!commandQueue.isEmpty())
+        {
+            String curCommand = commandQueue.poll().toString();
+            //procesarComando
+            stringBuffer.append(curCommand);
+        }
     }
 }
