@@ -104,9 +104,15 @@ public class PopParser {
     private String processImage() {
         Decoder decoder = Base64.getMimeDecoder();
         Encoder encoder = Base64.getMimeEncoder();
-        Image imageXT = new Image(decoder.decode(image.toString()));
-        imageXT.rotate(180);
-        return new String (encoder.encode(imageXT.getByteArray(mimeToImage(imageFormat))));
+        try {
+            Image imageXT = new Image(decoder.decode(image.toString()));
+            imageXT.rotate(180);
+            return new String(encoder.encode(imageXT.getByteArray(mimeToImage(imageFormat))));
+        } catch (IllegalArgumentException i)
+        {
+            i.printStackTrace();
+            return image.toString();
+        }
     }
 
     private String processSubject(String data) {

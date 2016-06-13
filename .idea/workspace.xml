@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/administrator/AdministratorProtocol.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/administrator/AdministratorProtocol.class" />
+    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="parseCommands initial and Max Length Validation">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/consola.txt" afterPath="$PROJECT_DIR$/consola.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log4j-application.log" afterPath="$PROJECT_DIR$/log4j-application.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopHandler.java" afterPath="$PROJECT_DIR$/src/pop3/PopHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/Main.java" afterPath="$PROJECT_DIR$/src/main/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopParser.java" afterPath="$PROJECT_DIR$/src/pop3/PopParser.java" />
     </list>
     <ignored path="ProtosTpe.iws" />
@@ -62,11 +61,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PopParser.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PopParser.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="532">
-              <caret line="172" column="5" selection-start-line="172" selection-start-column="5" selection-end-line="172" selection-end-column="5" />
+            <state relative-caret-position="1290">
+              <caret line="128" column="21" selection-start-line="128" selection-start-column="21" selection-end-line="128" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -106,7 +115,6 @@
         <option value="$PROJECT_DIR$/src/server/QueuedRegister.java" />
         <option value="$PROJECT_DIR$/src/server/ProxyServer.java" />
         <option value="$PROJECT_DIR$/src/transformations/Principal.java" />
-        <option value="$PROJECT_DIR$/src/main/Main.java" />
         <option value="$PROJECT_DIR$/src/proxy/utils/QueuedRegister.java" />
         <option value="$PROJECT_DIR$/src/proxy/utils/QueuedRegisterKey.java" />
         <option value="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" />
@@ -128,7 +136,6 @@
         <option value="$PROJECT_DIR$/src/administrator/ConfigurationManager.java" />
         <option value="$PROJECT_DIR$/src/administrator/ManagerProtocol.java" />
         <option value="$PROJECT_DIR$/src/administrator/Manager.java" />
-        <option value="$PROJECT_DIR$/src/main/Main.java" />
         <option value="$PROJECT_DIR$/src/administrator/JAXBParser.java" />
         <option value="$PROJECT_DIR$/src/administrator/XMLMultiplex_config.java" />
         <option value="$PROJECT_DIR$/src/administrator/XMLMultiplex.java" />
@@ -149,6 +156,8 @@
         <option value="$PROJECT_DIR$/src/pop3/PopHandler.java" />
         <option value="$PROJECT_DIR$/src/pop3/PopParser.java" />
         <option value="$PROJECT_DIR$/src/pop3/PopParser.java" />
+        <option value="$PROJECT_DIR$/src/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/Main.java" />
       </list>
     </option>
   </component>
@@ -1053,7 +1062,7 @@
       <workItem from="1465744053269" duration="7732000" />
       <workItem from="1465757930962" duration="3440000" />
       <workItem from="1465765565054" duration="4509000" />
-      <workItem from="1465770320822" duration="8680000" />
+      <workItem from="1465770320822" duration="10340000" />
     </task>
     <task id="LOCAL-00001" summary="Parser Initial Commit (and changed sdk to Java 8)">
       <created>1465078877954</created>
@@ -1111,11 +1120,18 @@
       <option name="project" value="LOCAL" />
       <updated>1465775183060</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="parseCommands initial and Max Length Validation">
+      <created>1465786111307</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1465786111307</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115697000" />
+    <option name="totallyTimeSpent" value="117357000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="989" extended-state="6" />
@@ -1191,6 +1207,7 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
     <MESSAGE value="Image inverter &amp; additional libraries" />
     <MESSAGE value="Parser Initial Commit (and changed sdk to Java 8)" />
     <MESSAGE value="Parser Beta Edition (not tried)" />
@@ -1200,7 +1217,8 @@
     <MESSAGE value="se conecta con un servidor por defecto cuando se escribe user 'nombre usuario'" />
     <MESSAGE value="multiplexing casi listo, falta que vea en un archivo a que servidor ir." />
     <MESSAGE value="Transform habilitators and max Image Size" />
-    <option name="LAST_COMMIT_MESSAGE" value="Transform habilitators and max Image Size" />
+    <MESSAGE value="parseCommands initial and Max Length Validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="parseCommands initial and Max Length Validation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1213,7 +1231,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.IdeaIC2016.1/idea64.vmoptions" />
     <entry file="file://$PROJECT_DIR$/src/proxy/utils/ServerTools.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -1406,14 +1423,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/administrator/XMLConfiguration.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -1525,10 +1534,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_91.jdk/Contents/Home/src.zip!/java/util/Base64.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="502">
+          <caret line="703" column="0" selection-start-line="703" selection-start-column="0" selection-end-line="703" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/pop3/PopParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="172" column="5" selection-start-line="172" selection-start-column="5" selection-end-line="172" selection-end-column="5" />
+        <state relative-caret-position="1290">
+          <caret line="128" column="21" selection-start-line="128" selection-start-column="21" selection-end-line="128" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
           <folding />
         </state>
       </provider>
