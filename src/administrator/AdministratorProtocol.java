@@ -255,8 +255,7 @@ public class AdministratorProtocol implements TCPProtocol {
     private String getCapa() {
         if(!isLogin)
             return "COMMANDS:\n" +
-                    "USER\n" +
-                    "PASS\r\n.\r\n";
+                    "USER\r\n.\r\n";
         else
             return "COMMANDS:\n" +
                     "LEET\n" +

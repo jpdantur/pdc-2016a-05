@@ -174,6 +174,7 @@ public class Worker implements Runnable{
         ByteBuffer buffer = handler.getReadBuffer();
 
         long bytesRead = channel.read(buffer);
+        stat.addBytesTransferred(bytesRead);
 
         if (bytesRead == 0) {
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
@@ -299,7 +300,6 @@ public class Worker implements Runnable{
         }
         buffer.flip();
         long bytesWritten = channel.write(buffer);
-
         stat.addBytesTransferred(bytesWritten);
 
         if(handler.moreWriteableData(buffer)){
