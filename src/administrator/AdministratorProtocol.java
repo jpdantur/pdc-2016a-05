@@ -237,7 +237,7 @@ public class AdministratorProtocol implements TCPProtocol {
     }
 
     private String getStat() {
-        return "BUFFER SIZE: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
+        return "\nBUFFER SIZE: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
                 "LEET: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\n" +
                 "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\n" +
                 "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
