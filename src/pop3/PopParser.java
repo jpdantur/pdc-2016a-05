@@ -37,7 +37,7 @@ public class PopParser {
     private boolean subjectEnabled;
     private enum State {HEADER, SUBJECT, POST_SUBJECT, BODY, IMAGE_HEADER, IMAGE}
     private State state = State.HEADER;
-    private static final int MAX_IMAGE_SIZE = 10000; //creo q son 10 Kb, de ultima se cambia
+    private static final int MAX_IMAGE_SIZE = 500000;
 
 
     public void setSubjectEnabled(boolean subjectEnabled) {

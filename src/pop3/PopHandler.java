@@ -55,7 +55,7 @@ public class PopHandler extends ConcurrentProxyHandler {
                 if(stringBuffer.charAt(i) == '\n'){
                     line = stringBuffer.substring(lineStart, i);
                     System.out.println("line : " + line);
-                    lineStart = i;
+                    lineStart = i+1;
                     boolean ans = analizeCommand(line);
                     if(firstType == null){
                         firstType = this.type;
@@ -65,8 +65,8 @@ public class PopHandler extends ConcurrentProxyHandler {
 
             System.out.println("linestart : " + lineStart + " | finish : " + stringBuffer.length());
 
-            this.setFirstLine(stringBuffer.substring(lineStart, stringBuffer.length() - 1));
-            stringBuffer.setLength(lineStart + 1);
+            this.setFirstLine(stringBuffer.substring(lineStart, stringBuffer.length()));
+            stringBuffer.setLength(lineStart);
 
 
             if(this.getOtherKey() == null || (((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null && !this.getFinishConnect())) {
