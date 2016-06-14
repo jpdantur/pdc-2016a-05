@@ -9,13 +9,6 @@ Juan Pablo dantur
 Jose Angel Vitali
 Leandro Matias Rivas
 
-
-#Compilacion
-#-----------------------------------------------------------------------
-#	Para la compilacion se ejecuta
-#
-#	$> ant compile
-#
 ------------------------------------------------------------------------
 Ejecución
 
