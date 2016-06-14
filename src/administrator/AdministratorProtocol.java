@@ -240,7 +240,7 @@ public class AdministratorProtocol implements TCPProtocol {
                 "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\r\n" +
                 "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\r\n" +
                 "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\r\n" +
-                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\r\n" +
+                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), true) + "\r\n" +
                 "ACCESS: " + stat.getAccesses() +
                 "\r\n.\r\n";
     }
