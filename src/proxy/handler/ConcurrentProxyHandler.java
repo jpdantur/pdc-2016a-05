@@ -154,10 +154,11 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     public int transferData() {
 
 
+        byte[] bytes = stringBuffer.toString().getBytes();
 
-        ByteBuffer otherWriteBuffer = ByteBuffer.allocate(stringBuffer.length());
+        ByteBuffer otherWriteBuffer = ByteBuffer.allocate(bytes.length);
 
-        otherWriteBuffer.put(stringBuffer.toString().getBytes());
+        otherWriteBuffer.put(bytes);
 
         ConcurrentProxyHandler otherHandler = ((ConcurrentProxyHandler) getOtherKey().attachment());
 

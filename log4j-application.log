@@ -344,3 +344,31 @@
 2016-06-14 01:30:52 DEBUG Worker:311 - channel close OF sun.nio.ch.SelectionKeyImpl@14bf9759
 2016-06-14 01:30:53 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@4f7d0008
 2016-06-14 01:30:53 DEBUG Worker:311 - channel close OF sun.nio.ch.SelectionKeyImpl@553f17c
+2016-06-14 12:50:59 INFO  Administrator:25 - Administrator is running.
+2016-06-14 12:50:59 INFO  ProxyServer:52 - Proxy server is running.
+2016-06-14 12:52:03 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@343f4d3d
+2016-06-14 12:52:03 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@53b32d7
+2016-06-14 12:52:41 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@548e7350
+2016-06-14 12:52:41 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@1a968a59
+2016-06-14 12:57:02 INFO  Administrator:25 - Administrator is running.
+2016-06-14 12:57:02 INFO  ProxyServer:52 - Proxy server is running.
+2016-06-14 12:57:02 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@53b32d7
+2016-06-14 12:57:02 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@343f4d3d
+2016-06-14 12:57:32 INFO  AdministratorProtocol:166 - Administrator logged in.
+2016-06-14 12:58:47 INFO  Administrator:25 - Administrator is running.
+2016-06-14 12:58:47 INFO  ProxyServer:52 - Proxy server is running.
+2016-06-14 12:59:32 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@53b32d7
+2016-06-14 12:59:32 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@343f4d3d
+2016-06-14 12:59:44 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@1a968a59
+2016-06-14 12:59:44 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@548e7350
+2016-06-14 13:00:46 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@77cd7a0
+2016-06-14 13:00:46 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@4667ae56
+2016-06-14 13:01:03 INFO  AdministratorProtocol:166 - Administrator logged in.
+2016-06-14 13:01:32 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@e25b2fe
+2016-06-14 13:01:32 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@204f30ec
+2016-06-14 13:02:43 DEBUG Worker:276 - channel close OF sun.nio.ch.SelectionKeyImpl@76f2b07d
+2016-06-14 13:02:43 DEBUG Worker:294 - channel close OF sun.nio.ch.SelectionKeyImpl@1f57539
+2016-06-14 13:12:11 INFO  Administrator:25 - Administrator is running.
+2016-06-14 13:12:11 INFO  ProxyServer:52 - Proxy server is running.
+2016-06-14 13:14:42 INFO  Administrator:25 - Administrator is running.
+2016-06-14 13:14:42 INFO  ProxyServer:52 - Proxy server is running.
