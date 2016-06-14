@@ -18,26 +18,19 @@ import org.apache.commons.codec.net.*;
 public class PopParser {
     private BCodec bCodec = new BCodec();
     private QCodec qCodec = new QCodec();
-
-    public StringBuilder getCommandTemp() {
-        return commandTemp;
-    }
-
-    private StringBuilder commandTemp = new StringBuilder();
     private StringBuilder temp = new StringBuilder();
     private StringBuilder image = new StringBuilder();
     private String codedSubjectRegex = "([ \t]*)(=\\?(.+?)\\?(.+?)\\?(.+?)\\?=)\r\n";
     private Pattern codedSubjectPattern = Pattern.compile(codedSubjectRegex);
-    private String imageHeaderRegex = "^content-type:[ \\t]*image/(.*?);.*\r\n";
+    private String imageHeaderRegex = "^content-type:[ \t]*image/(.*?);.*\r\n";
     private Pattern imageHeaderPattern = Pattern.compile(imageHeaderRegex, Pattern.CASE_INSENSITIVE);
     private Queue<StringBuilder> lineQueue = new LinkedList<>();
-    private Queue<StringBuilder> commandQueue = new LinkedList<>();
     private String imageFormat;
     private boolean imageEnabled;
     private boolean subjectEnabled;
     private enum State {HEADER, SUBJECT, POST_SUBJECT, BODY, IMAGE_HEADER, IMAGE}
     private State state = State.HEADER;
-    private static final int MAX_IMAGE_SIZE = 500000;
+    private static final int MAX_IMAGE_SIZE = 1024*1024; //1MB
 
 
     public void setSubjectEnabled(boolean subjectEnabled) {
@@ -80,7 +73,7 @@ public class PopParser {
             } else if (state == State.IMAGE_HEADER && curLine.equals("\r\n")) {
                state = State.IMAGE;
             } else if (state == State.IMAGE && !curLine.startsWith("--") && image.length()<=MAX_IMAGE_SIZE) {
-                image.append(curLine);
+                image.append(curLine.substring(0,curLine.length()-2));
                 curLine = "";
             } else if (state == State.IMAGE && !curLine.startsWith("--") && image.length()>MAX_IMAGE_SIZE) {
                 state = State.BODY;
@@ -101,18 +94,20 @@ public class PopParser {
         Matcher m = imageHeaderPattern.matcher(curLine);
         if (m.matches())
         {
-            imageFormat = m.group(1);
+            imageFormat = mimeToImage(m.group(1));
+            if (imageFormat == null)
+                return false;
         }
         return m.matches();
     }
 
     private String processImage() {
-        Decoder decoder = Base64.getMimeDecoder();
-        Encoder encoder = Base64.getMimeEncoder();
+        Decoder decoder = Base64.getDecoder();
+        Encoder encoder = Base64.getEncoder();
         try {
             Image imageXT = new Image(decoder.decode(image.toString()));
             imageXT.rotate(180);
-            return new String(encoder.encode(imageXT.getByteArray(mimeToImage(imageFormat))));
+            return new String(encoder.encode(imageXT.getByteArray(imageFormat))).replaceAll(".{76}","$0\r\n");
         } catch (IllegalArgumentException i)
         {
             i.printStackTrace();
@@ -161,27 +156,5 @@ public class PopParser {
         list.put("png","PNG");
         list.put("vnd.wap.wbmp","WBMP");
         return list.get(format);
-    }
-
-    public Queue<StringBuilder> parseCommands(StringBuffer stringBuffer)
-    {
-        for (int i = 0; i<stringBuffer.length();i++)
-        {
-            commandTemp.append(stringBuffer.charAt(i));
-            if (stringBuffer.charAt(i)=='\n')
-            {
-                commandQueue.offer(commandTemp);
-                commandTemp = new StringBuilder();
-            }
-        }
-        //stringBuffer.setLength(0);
-
-        return commandQueue;
-        /*while (!commandQueue.isEmpty())
-        {
-            String curCommand = commandQueue.poll().toString();
-            //procesarComando
-            stringBuffer.append(curCommand);
-        }*/
     }
 }
