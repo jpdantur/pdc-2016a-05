@@ -1,6 +1,6 @@
 package pop3;
 
-import proxy.handler.ConcurrentProxyHandler;
+import proxy.handler.SimpleProxyHandler;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -10,7 +10,7 @@ import java.util.regex.*;
 /**
  * Created by root on 5/27/16.
  */
-public class PopHandler extends ConcurrentProxyHandler {
+public class PopHandler extends SimpleProxyHandler {
 
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
@@ -125,7 +125,7 @@ public class PopHandler extends ConcurrentProxyHandler {
 
 
 
-    public boolean transformBufferDone(){
+    public boolean bufferDone(){
         if(this.getStringBuffer().indexOf("\n")==-1) {
             if (this.getStringBuffer().length()<=1000)
                 return false;

@@ -2,31 +2,23 @@ package proxy.handler;
 
 import administrator.Configuration;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by root on 5/27/16.
  */
-public abstract class ConcurrentProxyHandler implements ProxyHandler{
+public abstract class SimpleProxyHandler implements ProxyHandler{
 
     private SelectionKey otherKey;
     private ByteBuffer readBuffer;
-    private ByteBuffer writeBuffer;
     private StringBuffer stringBuffer;
     private ConcurrentLinkedDeque<ByteBuffer> writeQueue;
 
-
-
     private Configuration config = Configuration.getInstance();
 
-
     private String firstLine = "";
-    private String lastLine;
 
     private boolean terminated;
     private boolean isClient;
@@ -40,7 +32,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     private final int BUFFER_SIZE = config.getConfiguration().getBufferSize();
 
-    public ConcurrentProxyHandler(){
+    public SimpleProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         this.stringBuffer = new StringBuffer();
         this.terminated = false;
@@ -120,7 +112,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public boolean hasWrittenData(){
-        if (((ConcurrentProxyHandler)this.getOtherKey().attachment()).getWriteBuffer().hasRemaining()){
+        if (((SimpleProxyHandler)this.getOtherKey().attachment()).getWriteBuffer().hasRemaining()){
             System.out.println("true lindo");
             return true;
         }
@@ -136,7 +128,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     public void terminate() {
         System.out.println("SET TERMINATED");
         if(otherKey != null) {
-            ((ConcurrentProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
+            ((SimpleProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
         }
     }
 
@@ -166,9 +158,9 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
         otherWriteBuffer.put(bytes);
 
-        ConcurrentProxyHandler otherHandler = ((ConcurrentProxyHandler) getOtherKey().attachment());
+        SimpleProxyHandler otherHandler = ((SimpleProxyHandler) getOtherKey().attachment());
 
-        if(((ConcurrentProxyHandler)otherKey.attachment()).getOtherKey() != null){
+        if(((SimpleProxyHandler)otherKey.attachment()).getOtherKey() != null){
             otherHandler.setWriteBuffer(otherWriteBuffer);
         }
         stringBuffer.setLength(0);
@@ -224,19 +216,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public int writeBufferListSize(){
         return this.writeQueue.size();
-    }
-
-    public String getLastLine() {
-        return lastLine;
-    }
-
-    public void setLastLine(String lastLine) {
-        this.lastLine = lastLine;
-    }
-
-
-    public String getFirstLine() {
-        return firstLine;
     }
 
     public void setFirstLine(String firstLine) {

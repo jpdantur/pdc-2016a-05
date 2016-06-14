@@ -31,7 +31,7 @@ public class ProxyServer implements ServerTools {
 
     private  static Configuration config;
 
-    private static final int WORKER_POOL = 100;
+    private static final int WORKER_POOL = 1;
     private static final long TIMEOUT = 10;
 
     public ProxyServer(HandlerBuilder handlerBuilder) throws IOException {
@@ -65,13 +65,13 @@ public class ProxyServer implements ServerTools {
                     if(!key.isValid()) continue;
                     key.interestOps(0);
 
-                    //workerPool.execute(new Worker(key, this));
-
-                    Worker worker = new Worker(key, this);
-                    worker.run();
-
+                    if(WORKER_POOL == 1){
+                        Worker worker = new Worker(key, this);
+                        worker.run();
+                    }else {
+                        workerPool.execute(new Worker(key, this));
+                    }
                     updateKeys();
-
                 }
             }
         }catch (Exception e){
