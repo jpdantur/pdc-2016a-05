@@ -40,6 +40,15 @@ public interface ProxyHandler {
 
     int writeBufferListSize();
 
+    void setLastLine(String lastLine);
+    String getLastLine();
+
+    String getFirstLine();
+
+    void setFirstLine(String firstLine);
+
+
+
     boolean getToClose();
     void setToClose(boolean setToClose);
 

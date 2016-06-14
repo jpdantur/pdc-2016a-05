@@ -63,6 +63,7 @@ public class Worker implements Runnable{
                 if(handler.getOtherKey() != null) {
                     try {
                         handler.getOtherKey().channel().close();
+                        handler.getOtherKey().cancel();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -206,11 +207,11 @@ public class Worker implements Runnable{
                     key.cancel();
                     return;
                 }
-                if (handler.getOtherKey() != null) {
+                if (handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).getOtherKey() != null) {
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
-                } else if (!handler.getReadyToConnect()) {
+                } else if (handler.getOtherKey() == null && !handler.getReadyToConnect()) {
                     serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
                     if(handler.getToClose()){
                         handler.setTerminated(true);
@@ -248,7 +249,6 @@ public class Worker implements Runnable{
                     port = config.getConfiguration().getPOP3port();
                 }
 
-                //falta que me fije a que servidor !!!!
                 proxyAndServer.connect(new InetSocketAddress(host, port));
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
@@ -258,7 +258,7 @@ public class Worker implements Runnable{
             if(handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).writeBufferListSize() <= 20){
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
-            else{
+            else if(handler.getOtherKey() == null){
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
         } else {

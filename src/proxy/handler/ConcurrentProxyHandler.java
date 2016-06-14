@@ -18,6 +18,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private StringBuffer stringBuffer;
     private ConcurrentLinkedDeque<ByteBuffer> writeQueue;
 
+
+    private String firstLine = "";
+    private String lastLine;
+
     private boolean terminated;
     private boolean isClient;
 
@@ -28,7 +32,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private boolean finishConnect = false;
     private boolean wrongPass = false;
 
-    private static final int BUFFER_SIZE = 1;
+    private static final int BUFFER_SIZE = 1024;
 
     public ConcurrentProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -134,6 +138,8 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         //System.out.println("append");
         //if(!readBuffer.hasRemaining()) return;
 
+        stringBuffer.append(firstLine);
+
         readBuffer.flip();
         while(readBuffer.hasRemaining()){
             stringBuffer.append((char) readBuffer.get());
@@ -146,6 +152,8 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public int transferData() {
+
+
 
         ByteBuffer otherWriteBuffer = ByteBuffer.allocate(stringBuffer.length());
 
@@ -212,5 +220,23 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     public int writeBufferListSize(){
         return this.writeQueue.size();
     }
+
+    public String getLastLine() {
+        return lastLine;
+    }
+
+    public void setLastLine(String lastLine) {
+        this.lastLine = lastLine;
+    }
+
+
+    public String getFirstLine() {
+        return firstLine;
+    }
+
+    public void setFirstLine(String firstLine) {
+        this.firstLine = firstLine;
+    }
+
 
 }

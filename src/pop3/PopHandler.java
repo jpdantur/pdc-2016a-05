@@ -41,46 +41,92 @@ public class PopHandler extends ConcurrentProxyHandler {
     @Override
     public boolean analizeData() {
 
-        int index = this.getStringBuffer().indexOf("\n");
-        if(index != -1){
-            if(isClient()){
-                identifyType(index);
-                return false;
-            }
-            else if(((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null){
-                serverResponses++;
-                if(this.getStringBuffer().charAt(0)=='-'){
-                    this.setWrongPass(true);
-                    ByteBuffer bb = ByteBuffer.wrap((this.getStringBuffer().substring(0, index) + "\n").getBytes());
-                    bb.compact();
-                    ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
-                }
-                else if(this.getStringBuffer().charAt(0)=='+' && serverResponses == 3){
-                    this.setFinishConnect(true);
-                }
-            }
+        TYPE firstType = null;
 
-            if(this.type == TYPE.UNKOWN){
-                TYPE aux = typeQueue.poll();
-                if(aux == null) {
-                    this.type = TYPE.SAME;
-                }
-                else {
-                    this.type = aux;
-                    if (this.getStringBuffer().charAt(0) == '-') {
-                        this.type = TYPE.SAME;
+        StringBuffer stringBuffer = this.getStringBuffer();
+
+        int index = stringBuffer.indexOf("\n");
+        if(index != -1){
+
+            String line;
+            int lineStart = 0;
+
+            for(int i = 0; i < stringBuffer.length(); i++){
+                if(stringBuffer.charAt(i) == '\n'){
+                    line = stringBuffer.substring(lineStart, i);
+                    System.out.println("line : " + line);
+                    lineStart = i;
+                    boolean ans = analizeCommand(line);
+                    if(firstType == null){
+                        firstType = this.type;
                     }
                 }
             }
+
+            System.out.println("linestart : " + lineStart + " | finish : " + stringBuffer.length());
+
+            this.setFirstLine(stringBuffer.substring(lineStart, stringBuffer.length() - 1));
+            stringBuffer.setLength(lineStart + 1);
+
+
+            if(this.getOtherKey() == null || (((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null && !this.getFinishConnect())) {
+                System.out.println("SETEO 0");
+                getStringBuffer().setLength(0);
+            }
+
         }else{
             if(isClient() && this.getStringBuffer().length() > MAX_COMMAND_LENGTH)
                 return false;
             return true;
         }
 
+        this.type = firstType;
+
+        if(isClient()){
+            return false;
+        }
+
         return type != TYPE.SAME && type != TYPE.ML_SAME;
 
     }
+
+    private boolean analizeCommand(String s){
+        if(isClient()){
+            identifyType(s);
+            return false;
+        }
+        else if(((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null){
+            serverResponses++;
+            if(s.charAt(0)=='-'){
+                this.setWrongPass(true);
+                ByteBuffer bb = ByteBuffer.wrap((s + "\n").getBytes());
+                bb.compact();
+                ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
+            }
+            else if(s.charAt(0)=='+' && serverResponses == 3){
+                System.out.println("SIIIIIIIIIIIIIIIIIIIii");
+                this.setFinishConnect(true);
+            }
+            this.type = TYPE.SAME;
+        }
+
+        if(this.type == TYPE.UNKOWN){
+            TYPE aux = typeQueue.poll();
+            if(aux == null) {
+                this.type = TYPE.SAME;
+            }
+            else {
+                this.type = aux;
+                if (s.charAt(0) == '-') {
+                    this.type = TYPE.SAME;
+                }
+            }
+        }
+        return type != TYPE.SAME && type != TYPE.ML_SAME;
+    }
+
+
+
 
     public boolean transformBufferDone(){
         if(this.getStringBuffer().indexOf("\n")==-1) {
@@ -132,8 +178,8 @@ public class PopHandler extends ConcurrentProxyHandler {
 
     }
 
-    private void identifyType(int index) {
-        String originalBuffer = this.getStringBuffer().substring(0, index);
+    private void identifyType(String s) {
+        String originalBuffer = s.toString();
         String buffer = originalBuffer.toUpperCase();
         Matcher userMatcher = userPattern.matcher(originalBuffer);
         Matcher capaMatcher = capaPattern.matcher(buffer);
@@ -202,7 +248,6 @@ public class PopHandler extends ConcurrentProxyHandler {
                     this.setWriteBuffer(bb);
                 }
             }
-            getStringBuffer().setLength(0);
 
             this.type = TYPE.SAME;
             return;

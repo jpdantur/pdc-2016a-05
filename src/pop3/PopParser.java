@@ -18,6 +18,11 @@ import org.apache.commons.codec.net.*;
 public class PopParser {
     private BCodec bCodec = new BCodec();
     private QCodec qCodec = new QCodec();
+
+    public StringBuilder getCommandTemp() {
+        return commandTemp;
+    }
+
     private StringBuilder commandTemp = new StringBuilder();
     private StringBuilder temp = new StringBuilder();
     private StringBuilder image = new StringBuilder();
@@ -158,7 +163,7 @@ public class PopParser {
         return list.get(format);
     }
 
-    public void parseCommands(StringBuffer stringBuffer)
+    public Queue<StringBuilder> parseCommands(StringBuffer stringBuffer)
     {
         for (int i = 0; i<stringBuffer.length();i++)
         {
@@ -169,12 +174,14 @@ public class PopParser {
                 commandTemp = new StringBuilder();
             }
         }
-        stringBuffer.setLength(0);
-        while (!commandQueue.isEmpty())
+        //stringBuffer.setLength(0);
+
+        return commandQueue;
+        /*while (!commandQueue.isEmpty())
         {
             String curCommand = commandQueue.poll().toString();
             //procesarComando
             stringBuffer.append(curCommand);
-        }
+        }*/
     }
 }
