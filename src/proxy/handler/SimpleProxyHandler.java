@@ -16,8 +16,6 @@ public abstract class SimpleProxyHandler implements ProxyHandler{
     private StringBuffer stringBuffer;
     private ConcurrentLinkedDeque<ByteBuffer> writeQueue;
 
-    private Configuration config = Configuration.getInstance();
-
     private String firstLine = "";
 
     private boolean terminated;
@@ -30,7 +28,7 @@ public abstract class SimpleProxyHandler implements ProxyHandler{
     private boolean finishConnect = false;
     private boolean wrongPass = false;
 
-    private final int BUFFER_SIZE = config.getConfiguration().getBufferSize();
+    private final int BUFFER_SIZE = Configuration.getInstance().getConfiguration().getBufferSize();
 
     public SimpleProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -222,8 +220,16 @@ public abstract class SimpleProxyHandler implements ProxyHandler{
         this.firstLine = firstLine;
     }
 
-    public Configuration getConfig() {
+    /*public Configuration getConfig() {
         return config;
+    }*/
+
+    public boolean getLeet(){
+        return Configuration.getInstance().getConfiguration().getLeet();
+    }
+
+    public boolean getRotation(){
+        return Configuration.getInstance().getConfiguration().getRotation();
     }
 
 }

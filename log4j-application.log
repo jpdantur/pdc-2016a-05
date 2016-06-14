@@ -466,3 +466,7 @@
 2016-06-14 17:52:39 DEBUG Worker:267 - channel close OF sun.nio.ch.SelectionKeyImpl@2f686d1f
 2016-06-14 17:52:46 DEBUG Worker:236 - channel close OF sun.nio.ch.SelectionKeyImpl@7085bdee
 2016-06-14 17:52:46 DEBUG Worker:252 - channel close OF sun.nio.ch.SelectionKeyImpl@73ad2d6
+2016-06-14 18:03:06 DEBUG Worker:236 - channel close OF sun.nio.ch.SelectionKeyImpl@5700d6b1
+2016-06-14 18:03:06 DEBUG Worker:267 - channel close OF sun.nio.ch.SelectionKeyImpl@1ce92674
+2016-06-14 18:03:07 DEBUG Worker:236 - channel close OF sun.nio.ch.SelectionKeyImpl@5bcab519
+2016-06-14 18:03:07 DEBUG Worker:252 - channel close OF sun.nio.ch.SelectionKeyImpl@6fd02e5

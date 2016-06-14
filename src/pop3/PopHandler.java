@@ -1,5 +1,6 @@
 package pop3;
 
+import administrator.Configuration;
 import proxy.handler.SimpleProxyHandler;
 
 import java.nio.ByteBuffer;
@@ -19,10 +20,12 @@ public class PopHandler extends SimpleProxyHandler {
     private Pattern capaPattern = Pattern.compile("CAPA([ \t]*)\r?");
     private Pattern passPattern = Pattern.compile("[P|p][A|a][S|s][S|s] (.+)\r?");
     private Pattern quitPattern = Pattern.compile("[Q|q][U|u][I|i][T|t]\r?");
-    private Pattern listPattern = Pattern.compile("[L|l][I|i][S|s][T|t]( *)(0-9)?\r?");
-    private Pattern retrPattern = Pattern.compile("[R|r][E|e][T|t][R|r]( *)(0-9)?\r?");
-    private Pattern topPattern = Pattern.compile("[T|t][O|o][P|p]( *)(0-9)?\r?");
-    private Pattern uidlPattern = Pattern.compile("[U|u][I|i][D|d][L|l]( *)(0-9)?\r?");
+    private Pattern listPattern = Pattern.compile("[L|l][I|i][S|s][T|t].*\r?");
+    private Pattern retrPattern = Pattern.compile("[R|r][E|e][T|t][R|r].*\r?");
+    private Pattern topPattern = Pattern.compile("[T|t][O|o][P|p].*\r?");
+    private Pattern uidlPattern = Pattern.compile("[U|u][I|i][D|d][L|l].*\r?");
+
+    private static Configuration config = Configuration.getInstance();
 
     private int serverResponses = 0;
 
@@ -149,8 +152,8 @@ public class PopHandler extends SimpleProxyHandler {
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
             this.popParser.resetFlags();
-            popParser.setSubjectEnabled(this.getConfig().getConfiguration().getLeet());
-            popParser.setImageEnabled(this.getConfig().getConfiguration().getRotation());
+            popParser.setSubjectEnabled(this.config.getConfiguration().getLeet());
+            popParser.setImageEnabled(this.config.getConfiguration().getRotation());
             this.type = TYPE.UNKOWN;
         }
         this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
@@ -250,8 +253,8 @@ public class PopHandler extends SimpleProxyHandler {
     public void setModify(){
         this.typeQueue.offer(TYPE.MODIFY);
 
-        popParser.setSubjectEnabled(this.getConfig().getConfiguration().getLeet());
-        popParser.setImageEnabled(this.getConfig().getConfiguration().getRotation());
+        popParser.setSubjectEnabled(this.config.getConfiguration().getLeet());
+        popParser.setImageEnabled(this.config.getConfiguration().getRotation());
     }
 
     public void setMlSame(){
