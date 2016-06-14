@@ -1,24 +1,27 @@
-PROXY POP3
+PROXY para POP3
 -----------------------------------------------------------------------
 Trabajo Practico Especial para la materia Protocolos de Comunicación.
+1er Cuatrimestre de 2016.
 
-<--Compilacion
------------------------------------------------------------------------
-	Para la compilacion se ejecuta
+Integrantes:
+Leandro Llorca
+Juan Pablo dantur
+Jose Angel Vitali
+Leandro Matias Rivas
 
-	$> ant compile -->
 
------------------------------------------------------------------------
-Ejecucion
+#Compilacion
+#-----------------------------------------------------------------------
+#	Para la compilacion se ejecuta
+#
+#	$> ant compile
+#
+------------------------------------------------------------------------
+Ejecución
 
-	Para correrlo se ejecuta java -jar con el path del jar "proxy.jar" generado en ~build/jar.
+Para correr el proxy se debe ejecutar java -jar con el path de "ProtosTpe.jar".
 
-	Soporta los parametroe -p -d -c siendo estos, respectivamente, source port, destination port y el puerto de configuracion remota.
-
-	Si -p no se asigna toma por default 3000, si -d no se asigna
-	toma por default 110, si -c no se asigna toma por default 51914
-
------------------------------------------------------------------------
+------------------------------------------------------------------------
 Configuracion inicial
 
 La configuracion inicial para iniciar el proxy POP3 y el administrador se encuentra en el archivo Configuracion.xml. 
