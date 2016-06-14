@@ -1,5 +1,7 @@
 package proxy.handler;
 
+import administrator.Configuration;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
@@ -47,7 +49,7 @@ public interface ProxyHandler {
 
     void setFirstLine(String firstLine);
 
-
+    Configuration getConfig();
 
     boolean getToClose();
     void setToClose(boolean setToClose);

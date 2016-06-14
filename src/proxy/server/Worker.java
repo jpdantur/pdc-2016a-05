@@ -16,6 +16,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.UnresolvedAddressException;
 import java.rmi.ConnectIOException;
 import java.util.List;
 
@@ -57,6 +58,11 @@ public class Worker implements Runnable{
             ((ProxyHandler)((ProxyHandler)key.attachment()).getOtherKey().attachment()).setWriteBuffer(bb);
             serverTools.queue(new QueuedKey(((ProxyHandler)key.attachment()).getOtherKey(), SelectionKey.OP_WRITE));
             //e.printStackTrace();
+        } catch(UnresolvedAddressException e){
+            ByteBuffer bb = ByteBuffer.wrap("-ERR can't reach server.\r\n".getBytes());
+            bb.compact();
+            ((ProxyHandler)key.attachment()).setWriteBuffer(bb);
+            serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
         } catch (IOException e) {
             ProxyHandler handler = ((ProxyHandler)key.attachment());
             if(handler.isClient()){

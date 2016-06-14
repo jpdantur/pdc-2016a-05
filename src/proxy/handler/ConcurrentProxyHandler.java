@@ -1,5 +1,7 @@
 package proxy.handler;
 
+import administrator.Configuration;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -19,6 +21,10 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private ConcurrentLinkedDeque<ByteBuffer> writeQueue;
 
 
+
+    private Configuration config = Configuration.getInstance();
+
+
     private String firstLine = "";
     private String lastLine;
 
@@ -32,7 +38,7 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private boolean finishConnect = false;
     private boolean wrongPass = false;
 
-    private static final int BUFFER_SIZE = 1024;
+    private final int BUFFER_SIZE = config.getConfiguration().getBufferSize();
 
     public ConcurrentProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -165,8 +171,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         if(((ConcurrentProxyHandler)otherKey.attachment()).getOtherKey() != null){
             otherHandler.setWriteBuffer(otherWriteBuffer);
         }
-
-        System.out.println("SETEO 0 ");
         stringBuffer.setLength(0);
         return writeQueue.size();
     }
@@ -239,5 +243,8 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
         this.firstLine = firstLine;
     }
 
+    public Configuration getConfig() {
+        return config;
+    }
 
 }
