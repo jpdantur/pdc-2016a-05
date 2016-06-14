@@ -61,7 +61,6 @@ public class XMLConfiguration {
     public void setRotation(boolean r) { this.rotation = r; }
 
     public boolean getRotation() {
-        System.out.println("EL VALOR DE ROTATION ES " + this.rotation);
         return this.rotation;
     }
 

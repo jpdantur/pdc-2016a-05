@@ -56,14 +56,6 @@ public abstract class SimpleProxyHandler implements ProxyHandler{
     }
 
     public void setWriteBuffer(ByteBuffer bb){
-        /*this.writeBuffer = bb;
-        System.out.println("++++++++++++++");
-        //System.out.println("NO EL KEY " + this.getOtherKey().toString());
-        System.out.println("Nuevo Write BUffer con:");
-        System.out.println(new String(writeBuffer.array()));
-        System.out.println("++++++++++++++");*/
-
-        //System.out.println( new String(bb.array()));
         writeQueue.addLast(bb);
     }
 
@@ -111,20 +103,16 @@ public abstract class SimpleProxyHandler implements ProxyHandler{
 
     public boolean hasWrittenData(){
         if (((SimpleProxyHandler)this.getOtherKey().attachment()).getWriteBuffer().hasRemaining()){
-            System.out.println("true lindo");
             return true;
         }
         if(stringBuffer.length()>0){
-            System.out.println("true feo");
             transferData();
             return true;
         }
-        System.out.println("false horrible");
         return false;
     }
 
     public void terminate() {
-        System.out.println("SET TERMINATED");
         if(otherKey != null) {
             ((SimpleProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
         }
