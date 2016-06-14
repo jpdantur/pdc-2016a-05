@@ -41,17 +41,18 @@ public class AdministratorProtocol implements TCPProtocol {
         this.stat = Statistics.getInstance();
     }
 
-    public void handleAccept(SelectionKey key) throws IOException {
+    public void handleAccept(SelectionKey key, Administrator ad) throws IOException {
         SocketChannel clntChan = ((ServerSocketChannel) key.channel()).accept();
         clntChan.configureBlocking(false);
         stringBuffer.append(config.getConfiguration().getWellcome() + "\n");
-        clntChan.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(bufSize));
+        clntChan.register(key.selector(), SelectionKey.OP_WRITE, new AdminHandler(bufSize, key));
     }
 
-    public void handleRead(SelectionKey key) throws IOException {
+    public void handleRead(SelectionKey key, Administrator ad) throws IOException {
         // Client socket channel has pending data
         SocketChannel clntChan = (SocketChannel) key.channel();
-        readBuffer = (ByteBuffer) key.attachment();
+
+        readBuffer = ((AdminHandler) key.attachment()).getBuffer();
         long bytesRead = clntChan.read(readBuffer);
 
         boolean end = false;
@@ -79,16 +80,23 @@ public class AdministratorProtocol implements TCPProtocol {
         }
     }
 
-    public void handleWrite(SelectionKey key) throws IOException {
+    public void handleWrite(SelectionKey key, Administrator ad) throws IOException {
+        AdminHandler ah = ((AdminHandler) key.attachment());
         String str = stringBuffer.toString();
         String sendResp;
         //limpio el stringbuffer
         stringBuffer.setLength(0);
 
         if(str.contains("\n")){
-            sendResp = getResponde(str);
 
-            ByteBuffer buf = (ByteBuffer) key.attachment();
+            if(ah.getRcvdWellcome()) {
+                ah.setRcvdWellcome(false);
+                sendResp = getwellCome(str);
+            } else {
+                sendResp = getResponde(str, ah);
+            }
+
+            ByteBuffer buf = ((AdminHandler) key.attachment()).getBuffer();
             buf.flip(); // Prepare buffer for writing
             SocketChannel clntChan = (SocketChannel) key.channel();
             buf = ByteBuffer.wrap(sendResp.getBytes());
@@ -96,6 +104,7 @@ public class AdministratorProtocol implements TCPProtocol {
 
             if(sendResp.contains(config.getConfiguration().getGbyeMsg())) {
                 this.showWellcomeMsg = true;
+                ad.setAdminHandler(null);
                 logger.info("Close administrator.");
                 clntChan.close();
                 return;
@@ -110,28 +119,7 @@ public class AdministratorProtocol implements TCPProtocol {
         }
     }
 
-    private void setUser(String user) {
-        this.adminUser = user;
-    }
-
-    private String getUser() {
-        return this.adminUser;
-    }
-
-    private void setPass(String pass) {
-        this.adminPass = pass;
-    }
-
-    private String getPass() {
-        return this.adminPass;
-    }
-
-    private String getResponde(String input) {
-        if(showWellcomeMsg) {
-            showWellcomeMsg = false;
-            return OKresp + input;
-        }
-
+    private String getResponde(String input, AdminHandler ah) {
         if(input.toLowerCase().equals("quit\r\n") || input.toLowerCase().equals("quit\n"))
             return getQuit();
 
@@ -156,17 +144,17 @@ public class AdministratorProtocol implements TCPProtocol {
 
             switch (command.toLowerCase()) {
                 case "user":
-                    setUser(input.replace(command+" ", ""));
+                    ah.setUser(input.replace(command+" ", ""));
                     break;
 
                 case "pass":
-                    setPass(input.replace(command+" ", ""));
-                    this.isLogin = checkUserPassAdmin();
+                    ah.setPass(input.replace(command+" ", ""));
+                    this.isLogin = checkUserPassAdmin(ah);
                     if(isLogin) {
                         logger.info("Administrator logged in.");
                         return login;
                     } else {
-                        deleteUserPass();
+                        deleteUserPass(ah);
                         return ERRresp+" USER or PASS incorrect.\r\n";
                     }
                 case "leet":
@@ -200,24 +188,32 @@ public class AdministratorProtocol implements TCPProtocol {
         }
     }
 
-    private boolean checkUserPassAdmin(){
-        if(admin.getUser().equals(getUser()) &&
-                admin.getPass().equals(getPass()))
+    private String getwellCome(String input) {
+            return OKresp + input;
+    }
+
+    private boolean checkUserPassAdmin(AdminHandler ah){
+        if(admin.getUser().equals(ah.getUser()) &&
+                admin.getPass().equals(ah.getPass())){
+            logger.info("Admin " + ah.getUser() + " is login correctly.");
             return true;
+        }
         return false;
     }
 
-    private void deleteUserPass() {
-        setUser("");
-        setPass("");
+    private void deleteUserPass(AdminHandler ah) {
+        ah.setUser("");
+        ah.setPass("");
     }
 
     private int setL33t(String input) {
         String value = input.toLowerCase();
         if(value.equals("yes")){
+            logger.info("LEET activated.");
             this.config.getConfiguration().setLeet(true);
             return 0;
         } else if(value.equals("no")){
+            logger.info("LEET deactivated.");
             this.config.getConfiguration().setLeet(false);
             return 0;
         }
@@ -227,9 +223,11 @@ public class AdministratorProtocol implements TCPProtocol {
     private int setRotation(String input) {
         String value = input.toLowerCase();
         if(value.equals("yes")){
+            logger.info("ROTATION activated.");
             this.config.getConfiguration().setRotation(true);
             return 0;
         } else if(value.equals("no")){
+            logger.info("ROTATION deactivated.");
             this.config.getConfiguration().setRotation(false);
             return 0;
         }
@@ -237,12 +235,12 @@ public class AdministratorProtocol implements TCPProtocol {
     }
 
     private String getStat() {
-        return "\nBUFFER SIZE: " + this.config.getConfiguration().getBufferSize()+"bytes\n" +
-                "LEET: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\n" +
-                "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\n" +
-                "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\n" +
-                "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\n" +
-                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\n" +
+        return "\nBUFFER SIZE: " + this.config.getConfiguration().getBufferSize()+"bytes\r\n" +
+                "LEET: " + (this.config.getConfiguration().getLeet() ? "yes" : "no" ) + "\r\n" +
+                "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\r\n" +
+                "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\r\n" +
+                "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\r\n" +
+                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), false) + "\r\n" +
                 "ACCESS: " + stat.getAccesses() +
                 "\r\n.\r\n";
     }
@@ -254,12 +252,12 @@ public class AdministratorProtocol implements TCPProtocol {
 
     private String getCapa() {
         if(!isLogin)
-            return "COMMANDS:\n" +
+            return "COMMANDS:\r\n" +
                     "USER\r\n.\r\n";
         else
-            return "COMMANDS:\n" +
-                    "LEET\n" +
-                    "ROTATION\n" +
+            return "COMMANDS:\r\n" +
+                    "LEET\r\n" +
+                    "ROTATION\r\n" +
                     "STAT\r\n.\r\n";
     }
 

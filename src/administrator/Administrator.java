@@ -15,6 +15,7 @@ public class Administrator implements Runnable{
     private final static Logger logger = Logger.getLogger(Administrator.class);
     private static final int TIMEOUT = 10; // Wait timeout (milliseconds)
     private static Configuration config;
+    private AdminHandler adminHandler;
 
     public Administrator() {
         config = Configuration.getInstance();
@@ -48,25 +49,31 @@ public class Administrator implements Runnable{
                     SelectionKey key = keyIter.next(); // Key is bit mask
                     // Server socket channel has pending connection requests?
                     if (key.isAcceptable()) {
-                        protocol.handleAccept(key);
+                        protocol.handleAccept(key, this);
                     }
                     // Client socket channel has pending data?
                     if (key.isReadable()) {
-                        protocol.handleRead(key);
+                        protocol.handleRead(key, this);
                     }
                     // Client socket channel is available for writing and
                     // key is valid (i.e., channel not closed)?
                     if (key.isValid() && key.isWritable()) {
-                        protocol.handleWrite(key);
+                        protocol.handleWrite(key, this);
                     }
                     keyIter.remove(); // remove from set of selected keys
                 }
             }
-        }catch(IOException ioe) {
+        } catch (IOException ioe) {
             logger.debug(ioe.getStackTrace());
             //do something
         }
-
     }
 
+    public void setAdminHandler(AdminHandler ah) {
+        this.adminHandler = ah;
+    }
+
+    public AdminHandler getAdminHandler() {
+        return this.adminHandler;
+    }
 }
