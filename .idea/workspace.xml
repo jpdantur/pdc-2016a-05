@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="saque souts al pedo.">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/consola.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/proxy/utils/QueuedRegister.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/proxy/handler/ConcurrentProxyHandler.java" afterPath="$PROJECT_DIR$/src/proxy/handler/SimpleProxyHandler.java" />
+    <list default="true" id="f422068d-1d63-420e-9f81-8de8a1897773" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ConcurrentProxyHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/utils/QueuedRegister.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopHandler.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopParser.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/pop3/PopParser.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ProxyHandler.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/handler/ProxyHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/ProxyServer.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/ProxyServer.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/Worker.class" afterPath="$PROJECT_DIR$/out/production/ProtosTpe/proxy/server/Worker.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log4j-application.log" afterPath="$PROJECT_DIR$/log4j-application.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pop3/PopHandler.java" afterPath="$PROJECT_DIR$/src/pop3/PopHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" afterPath="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" afterPath="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/proxy/server/Worker.java" afterPath="$PROJECT_DIR$/src/proxy/server/Worker.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/log4j.properties" afterPath="$PROJECT_DIR$/src/log4j.properties" />
     </list>
     <ignored path="ProtosTpe.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,10 +34,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ProxyServer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ProxyServer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
+            <state relative-caret-position="720">
               <caret line="73" column="33" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
               <folding />
             </state>
@@ -46,8 +47,18 @@
       <file leaf-file-name="Worker.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+            <state relative-caret-position="-1008">
+              <caret line="55" column="116" selection-start-line="55" selection-start-column="116" selection-end-line="55" selection-end-column="116" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="log4j.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/log4j.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="37" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -86,10 +97,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PopHandler.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PopHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/pop3/PopHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1202">
+            <state relative-caret-position="864">
               <caret line="57" column="64" selection-start-line="57" selection-start-column="64" selection-end-line="57" selection-end-column="64" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -116,7 +127,7 @@
         <entry file="file://$PROJECT_DIR$/Configuration.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="18">
-              <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
+              <caret line="1" column="20" selection-start-line="0" selection-start-column="0" selection-end-line="41" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -152,7 +163,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/server/KeyModifier.java" />
         <option value="$PROJECT_DIR$/src/server/PopHandler.java" />
         <option value="$PROJECT_DIR$/src/server/Queueable.java" />
         <option value="$PROJECT_DIR$/src/server/QueuedKey.java" />
@@ -200,9 +210,10 @@
         <option value="$PROJECT_DIR$/Configuration.xml" />
         <option value="$PROJECT_DIR$/src/proxy/handler/SimpleProxyHandler.java" />
         <option value="$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java" />
+        <option value="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
+        <option value="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
+        <option value="$PROJECT_DIR$/src/log4j.properties" />
         <option value="$PROJECT_DIR$/src/proxy/server/Worker.java" />
-        <option value="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
-        <option value="$PROJECT_DIR$/src/proxy/server/ProxyServer.java" />
       </list>
     </option>
   </component>
@@ -1101,7 +1112,7 @@
       <workItem from="1465879235267" duration="2538000" />
       <workItem from="1465919410312" duration="1416000" />
       <workItem from="1465925533036" duration="1045000" />
-      <workItem from="1465928628210" duration="4621000" />
+      <workItem from="1465928628210" duration="8870000" />
     </task>
     <task id="LOCAL-00001" summary="Parser Initial Commit (and changed sdk to Java 8)">
       <created>1465078877954</created>
@@ -1180,11 +1191,18 @@
       <option name="project" value="LOCAL" />
       <updated>1465932505468</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="saque souts al pedo. te borre consola.txt a vos, wally">
+      <created>1465933322115</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1465933322115</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="153480000" />
+    <option name="totallyTimeSpent" value="157729000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="27" width="1368" height="742" extended-state="6" />
@@ -1273,7 +1291,8 @@
     <MESSAGE value="parseCommands initial and Max Length Validation" />
     <MESSAGE value="manda cualquiera cosa (hasta una iso asi nomas)" />
     <MESSAGE value="ponele que ahi anda" />
-    <option name="LAST_COMMIT_MESSAGE" value="ponele que ahi anda" />
+    <MESSAGE value="saque souts al pedo. te borre consola.txt a vos, wally" />
+    <option name="LAST_COMMIT_MESSAGE" value="saque souts al pedo. te borre consola.txt a vos, wally" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1286,13 +1305,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/proxy/utils/ServerTools.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
@@ -1559,10 +1571,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="29" column="22" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="73" column="33" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Configuration.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
-          <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
+          <caret line="1" column="20" selection-start-line="0" selection-start-column="0" selection-end-line="41" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/log4j.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="37" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1008">
+          <caret line="55" column="116" selection-start-line="55" selection-start-column="116" selection-end-line="55" selection-end-column="116" />
           <folding />
         </state>
       </provider>
@@ -1578,17 +1622,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/handler/ProxyHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="71">
-          <caret line="29" column="22" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/pop3/PopHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1202">
+        <state relative-caret-position="864">
           <caret line="57" column="64" selection-start-line="57" selection-start-column="64" selection-end-line="57" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1597,22 +1633,6 @@
             <element signature="e#8736#8737#0" expanded="true" />
             <element signature="e#8786#8787#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/server/Worker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/proxy/server/ProxyServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="73" column="33" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
