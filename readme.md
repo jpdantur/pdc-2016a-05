@@ -1,13 +1,12 @@
 PROXY POP3
 -----------------------------------------------------------------------
-Trabajo Practico Especial para la materia Protocolos de COmin
-Desarrollado para la catedra de Protocolos de Comunicacion del ITBA junto a Jorge Mozzino y Tomas Mehdi.
+Trabajo Practico Especial para la materia Protocolos de Comunicación.
 
-Compilacion
+<--Compilacion
 -----------------------------------------------------------------------
 	Para la compilacion se ejecuta
 
-	$> ant compile
+	$> ant compile -->
 
 -----------------------------------------------------------------------
 Ejecucion
@@ -22,3 +21,6 @@ Ejecucion
 -----------------------------------------------------------------------
 Configuracion inicial
 
+La configuracion inicial para iniciar el proxy POP3 y el administrador se encuentra en el archivo Configuracion.xml. 
+Este archivo no se modifica en tiempo de ejecución. Este XML se debe encontrar en la misma carpeta en la que se encuentra
+el archivo .jar.
