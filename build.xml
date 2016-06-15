@@ -1,0 +1,18 @@
+<project name="ProtosTPE" default="build">
+ <target name="compile" >
+ 	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source">
+		<classpath>
+			<fileset dir="lib" includes="*.jar"/>
+		</classpath>
+	</javac> 
+ </target>
+ <target name="build" depends="compile">
+	<jar destfile="ProtosTPE.jar" basedir="bin">
+ 		<manifest>
+ 			<attribute name="Main-Class" value="main.Main"/>
+ 		</manifest>
+		<zipgroupfileset dir="lib" includes="*.jar" />
+		<fileset dir="src" includes="log4j.properties"/>
+	</jar> 
+ </target>
+</project> 
