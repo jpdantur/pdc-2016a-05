@@ -1,7 +1,7 @@
 package pop3;
 
 import administrator.Configuration;
-import proxy.handler.ConcurrentProxyHandler;
+import proxy.handler.SimpleProxyHandler;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -11,15 +11,20 @@ import java.util.regex.*;
 /**
  * Created by root on 5/27/16.
  */
-public class PopHandler extends ConcurrentProxyHandler {
+public class PopHandler extends SimpleProxyHandler {
 
     public enum TYPE {SAME, MODIFY, ML_SAME, UNKOWN}
     private TYPE type;
     private Queue<TYPE> typeQueue;
-    private Pattern userPattern = Pattern.compile("[U|u][S|s][E|e][R|r] ?(.*)\r?");
-    private Pattern capaPattern = Pattern.compile("CAPA*\r?");
-    private Pattern passPattern = Pattern.compile("[P|p][A|a][S|s][S|s] ?(.*)\r?");
-    private Pattern quitPattern = Pattern.compile("[Q|q][U|u][I|i][T|t] ?(.*)\r?");
+    private Pattern userPattern = Pattern.compile("[U|u][S|s][E|e][R|r] (.+)\r?");
+    private Pattern capaPattern = Pattern.compile("CAPA([ \t]*)\r?");
+    private Pattern passPattern = Pattern.compile("[P|p][A|a][S|s][S|s] (.+)\r?");
+    private Pattern quitPattern = Pattern.compile("[Q|q][U|u][I|i][T|t]\r?");
+    private Pattern listPattern = Pattern.compile("[L|l][I|i][S|s][T|t].*\r?");
+    private Pattern retrPattern = Pattern.compile("[R|r][E|e][T|t][R|r].*\r?");
+    private Pattern topPattern = Pattern.compile("[T|t][O|o][P|p].*\r?");
+    private Pattern uidlPattern = Pattern.compile("[U|u][I|i][D|d][L|l].*\r?");
+
     private static Configuration config = Configuration.getInstance();
 
     private int serverResponses = 0;
@@ -41,66 +46,100 @@ public class PopHandler extends ConcurrentProxyHandler {
     @Override
     public boolean analizeData() {
 
-        int index = this.getStringBuffer().indexOf("\n");
-        if(index != -1){
-            if(isClient()){
-                identifyType(index);
-                return false;
-            }
-            else if(((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null){
-                serverResponses++;
-                if(this.getStringBuffer().charAt(0)=='-'){
-                    this.setWrongPass(true);
-                    ByteBuffer bb = ByteBuffer.wrap((this.getStringBuffer().substring(0, index) + "\n").getBytes());
-                    bb.compact();
-                    ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
-                }
-                else if(this.getStringBuffer().charAt(0)=='+' && serverResponses == 3){
-                    this.setFinishConnect(true);
-                }
-            }
+        TYPE firstType = null;
 
-            if(this.type == TYPE.UNKOWN){
-                TYPE aux = typeQueue.poll();
-                if(aux == null) {
-                    this.type = TYPE.SAME;
-                }
-                else {
-                    this.type = aux;
-                    if (this.getStringBuffer().charAt(0) == '-') {
-                        this.type = TYPE.SAME;
+        StringBuffer stringBuffer = this.getStringBuffer();
+
+        int index = stringBuffer.indexOf("\n");
+        if(index != -1){
+
+            String line;
+            int lineStart = 0;
+
+            for(int i = 0; i < stringBuffer.length(); i++){
+                if(stringBuffer.charAt(i) == '\n'){
+                    line = stringBuffer.substring(lineStart, i);
+                    lineStart = i+1;
+                    boolean ans = analizeCommand(line);
+                    if(firstType == null){
+                        firstType = this.type;
                     }
                 }
             }
+
+            this.setFirstLine(stringBuffer.substring(lineStart, stringBuffer.length()));
+            stringBuffer.setLength(lineStart);
+
+
+            if(this.getOtherKey() == null || (((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null && !this.getFinishConnect())) {
+                getStringBuffer().setLength(0);
+            }
+
         }else{
             if(isClient() && this.getStringBuffer().length() > MAX_COMMAND_LENGTH)
                 return false;
             return true;
         }
 
+        this.type = firstType;
+
+        if(isClient()){
+            return false;
+        }
+
         return type != TYPE.SAME && type != TYPE.ML_SAME;
 
     }
 
-    public boolean transformBufferDone(){
+    private boolean analizeCommand(String s){
+        if(isClient()){
+            identifyType(s);
+            return false;
+        }
+        else if(((PopHandler)this.getOtherKey().attachment()).getOtherKey() == null){
+            serverResponses++;
+            if(s.charAt(0)=='-'){
+                this.setWrongPass(true);
+                ByteBuffer bb = ByteBuffer.wrap((s + "\n").getBytes());
+                bb.compact();
+                ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
+            }
+            else if(s.charAt(0)=='+' && serverResponses == 3){
+                this.setFinishConnect(true);
+            }
+            this.type = TYPE.SAME;
+        }
+
+        if(this.type == TYPE.UNKOWN){
+            TYPE aux = typeQueue.poll();
+            if(aux == null) {
+                this.type = TYPE.SAME;
+            }
+            else {
+                this.type = aux;
+                if (s.charAt(0) == '-') {
+                    this.type = TYPE.SAME;
+                }
+            }
+        }
+        return type != TYPE.SAME && type != TYPE.ML_SAME;
+    }
+
+
+
+
+    public boolean bufferDone(){
         if(this.getStringBuffer().indexOf("\n")==-1) {
             if (this.getStringBuffer().length()<=1000)
                 return false;
             this.type = TYPE.ML_SAME;
             return true;
         }
-
-        //Si ya tengo todo para modificar, lo hago, y return true
-        //Si no, return false
-        //this.type = TYPE.UNKOWN;
-        //System.out.println("Aca empieza");
         transformData();
-        //System.out.println("Len: "+this.getStringBuffer().length());
         return this.getStringBuffer().length()!=0;
     }
 
     public void resetHandler(){
-        //System.out.println("TIPO ACTUAL " + this.type);
         if(isClient()) return;
         if(this.type == TYPE.SAME){
             this.type = TYPE.UNKOWN;
@@ -110,37 +149,28 @@ public class PopHandler extends ConcurrentProxyHandler {
 
         if(this.getStringBuffer().indexOf("\r\n.\r\n")!=-1){
             this.popParser.resetFlags();
-            System.out.println("SETEO UNKOWN - RESET HANDLER");
             this.type = TYPE.UNKOWN;
         }else if(halfEnd && length < 4 && this.getStringBuffer().toString().equals(".\r\n")){
             this.popParser.resetFlags();
-            popParser.setSubjectEnabled(config.getConfiguration().getLeet());
-            popParser.setImageEnabled(config.getConfiguration().getRotation());
-            System.out.println("SETEO UNKOWN - RESET HANDLER");
+            popParser.setSubjectEnabled(this.config.getConfiguration().getLeet());
+            popParser.setImageEnabled(this.config.getConfiguration().getRotation());
             this.type = TYPE.UNKOWN;
         }
         this.halfEnd = length >=2 && this.getStringBuffer().substring(length-2, length).equals("\r\n");
-        /*
-        System.out.println("*** " + this.getStringBuffer().substring(length-2, length));
-        System.out.println("++++++++++++++++++");
-        System.out.println(this.getStringBuffer().toString());
-        System.out.println("++++++++++++++++++");
-        if(this.halfEnd){
-
-            System.out.println("ES VERDADEROOOO");
-        }*/
-
     }
 
-    private void identifyType(int index) {
-        String originalBuffer = this.getStringBuffer().substring(0, index);
+    private void identifyType(String s) {
+        String originalBuffer = s.toString();
         String buffer = originalBuffer.toUpperCase();
         Matcher userMatcher = userPattern.matcher(originalBuffer);
         Matcher capaMatcher = capaPattern.matcher(buffer);
         Matcher passMatcher = passPattern.matcher(originalBuffer);
         Matcher quitMatcher = quitPattern.matcher(originalBuffer);
+        Matcher listMatcher = listPattern.matcher(originalBuffer);
+        Matcher retrMatcher = retrPattern.matcher(originalBuffer);
+        Matcher topMatcher = topPattern.matcher(originalBuffer);
+        Matcher uidlMatcher = uidlPattern.matcher(originalBuffer);
 
-        System.out.println("|"+buffer +"|");
 
         if(getOtherKey() == null) {
             if(userMatcher.matches()){
@@ -155,10 +185,6 @@ public class PopHandler extends ConcurrentProxyHandler {
                 bb.compact();
                 this.setWriteBuffer(bb);
 
-                System.out.println("el usuario es: |" + this.getUser() + "|");
-
-                System.out.println("----------------  " + this.getUser() + "  --------------");
-
             }
             else if(passMatcher.matches()){
                 attempts = 0;
@@ -168,7 +194,6 @@ public class PopHandler extends ConcurrentProxyHandler {
                     } else {
                         this.setPass("");
                     }
-                    System.out.println("la contraseña es: |" + this.getPass() + "|");
                     this.setReadyToConnect(true);
                 }else {
                     ByteBuffer bb = ByteBuffer.wrap(("-ERR No username given.\r\n").getBytes());
@@ -202,14 +227,13 @@ public class PopHandler extends ConcurrentProxyHandler {
                     this.setWriteBuffer(bb);
                 }
             }
-            getStringBuffer().setLength(0);
 
             this.type = TYPE.SAME;
             return;
         }
-        if(buffer.contains("RETR") || buffer.contains("TOP")){
+        if(retrMatcher.matches() || topMatcher.matches()){
             ((PopHandler)this.getOtherHandler()).setModify();
-        }else if(buffer.contains("LIST")){
+        }else if(listMatcher.matches() || uidlMatcher.matches() || capaMatcher.matches()){
             ((PopHandler)this.getOtherHandler()).setMlSame();
         }else{
             ((PopHandler)this.getOtherHandler()).setSame();
@@ -223,20 +247,17 @@ public class PopHandler extends ConcurrentProxyHandler {
 
 
     public void setSame(){
-        //System.out.println("---SAME---");
         this.typeQueue.offer(TYPE.SAME);
     }
 
     public void setModify(){
-        //System.out.println("---MODIFY---");
         this.typeQueue.offer(TYPE.MODIFY);
 
-        popParser.setSubjectEnabled(config.getConfiguration().getLeet());
-        popParser.setImageEnabled(config.getConfiguration().getRotation());
+        popParser.setSubjectEnabled(this.config.getConfiguration().getLeet());
+        popParser.setImageEnabled(this.config.getConfiguration().getRotation());
     }
 
     public void setMlSame(){
-        //System.out.println("---ML_SAME---");
         this.typeQueue.offer(TYPE.ML_SAME);
     }
 

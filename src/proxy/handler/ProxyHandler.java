@@ -1,5 +1,7 @@
 package proxy.handler;
 
+import administrator.Configuration;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
@@ -25,7 +27,7 @@ public interface ProxyHandler {
     boolean isClient();
     void setClient();
     boolean moreWriteableData(ByteBuffer byteBuffer);
-    boolean transformBufferDone();
+    boolean bufferDone();
     void resetHandler();
     boolean getReadyToConnect();
     void setReadyToConnect(boolean readyToConnect);
@@ -39,6 +41,8 @@ public interface ProxyHandler {
     void setWrongPass(boolean wrongPass);
 
     int writeBufferListSize();
+
+    void setFirstLine(String firstLine);
 
     boolean getToClose();
     void setToClose(boolean setToClose);

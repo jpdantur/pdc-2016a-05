@@ -1,22 +1,22 @@
 package proxy.handler;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
+import administrator.Configuration;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by root on 5/27/16.
  */
-public abstract class ConcurrentProxyHandler implements ProxyHandler{
+public abstract class SimpleProxyHandler implements ProxyHandler{
 
     private SelectionKey otherKey;
     private ByteBuffer readBuffer;
-    private ByteBuffer writeBuffer;
     private StringBuffer stringBuffer;
     private ConcurrentLinkedDeque<ByteBuffer> writeQueue;
+
+    private String firstLine = "";
 
     private boolean terminated;
     private boolean isClient;
@@ -28,9 +28,9 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     private boolean finishConnect = false;
     private boolean wrongPass = false;
 
-    private static final int BUFFER_SIZE = 1;
+    private final int BUFFER_SIZE = Configuration.getInstance().getConfiguration().getBufferSize();
 
-    public ConcurrentProxyHandler(){
+    public SimpleProxyHandler(){
         this.readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         this.stringBuffer = new StringBuffer();
         this.terminated = false;
@@ -56,14 +56,6 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public void setWriteBuffer(ByteBuffer bb){
-        /*this.writeBuffer = bb;
-        System.out.println("++++++++++++++");
-        //System.out.println("NO EL KEY " + this.getOtherKey().toString());
-        System.out.println("Nuevo Write BUffer con:");
-        System.out.println(new String(writeBuffer.array()));
-        System.out.println("++++++++++++++");*/
-
-        //System.out.println( new String(bb.array()));
         writeQueue.addLast(bb);
     }
 
@@ -110,29 +102,27 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
     }
 
     public boolean hasWrittenData(){
-        if (((ConcurrentProxyHandler)this.getOtherKey().attachment()).getWriteBuffer().hasRemaining()){
-            System.out.println("true lindo");
+        if (((SimpleProxyHandler)this.getOtherKey().attachment()).getWriteBuffer().hasRemaining()){
             return true;
         }
         if(stringBuffer.length()>0){
-            System.out.println("true feo");
             transferData();
             return true;
         }
-        System.out.println("false horrible");
         return false;
     }
 
     public void terminate() {
-        System.out.println("SET TERMINATED");
         if(otherKey != null) {
-            ((ConcurrentProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
+            ((SimpleProxyHandler) this.getOtherKey().attachment()).setTerminated(true);
         }
     }
 
     public void appendBuffer() {
         //System.out.println("append");
         //if(!readBuffer.hasRemaining()) return;
+
+        stringBuffer.append(firstLine);
 
         readBuffer.flip();
         while(readBuffer.hasRemaining()){
@@ -147,17 +137,18 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public int transferData() {
 
-        ByteBuffer otherWriteBuffer = ByteBuffer.allocate(stringBuffer.length());
 
-        otherWriteBuffer.put(stringBuffer.toString().getBytes());
+        byte[] bytes = stringBuffer.toString().getBytes();
 
-        ConcurrentProxyHandler otherHandler = ((ConcurrentProxyHandler) getOtherKey().attachment());
+        ByteBuffer otherWriteBuffer = ByteBuffer.allocate(bytes.length);
 
-        if(((ConcurrentProxyHandler)otherKey.attachment()).getOtherKey() != null){
+        otherWriteBuffer.put(bytes);
+
+        SimpleProxyHandler otherHandler = ((SimpleProxyHandler) getOtherKey().attachment());
+
+        if(((SimpleProxyHandler)otherKey.attachment()).getOtherKey() != null){
             otherHandler.setWriteBuffer(otherWriteBuffer);
         }
-
-        System.out.println("SETEO 0 ");
         stringBuffer.setLength(0);
         return writeQueue.size();
     }
@@ -211,6 +202,22 @@ public abstract class ConcurrentProxyHandler implements ProxyHandler{
 
     public int writeBufferListSize(){
         return this.writeQueue.size();
+    }
+
+    public void setFirstLine(String firstLine) {
+        this.firstLine = firstLine;
+    }
+
+    /*public Configuration getConfig() {
+        return config;
+    }*/
+
+    public boolean getLeet(){
+        return Configuration.getInstance().getConfiguration().getLeet();
+    }
+
+    public boolean getRotation(){
+        return Configuration.getInstance().getConfiguration().getRotation();
     }
 
 }

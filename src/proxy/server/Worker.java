@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import proxy.handler.ProxyHandler;
 import proxy.utils.*;
 
-import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
@@ -16,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.rmi.ConnectIOException;
+import java.nio.channels.UnresolvedAddressException;
 import java.util.List;
 
 /**
@@ -38,7 +37,6 @@ public class Worker implements Runnable{
 
     @Override
     public void run() {
-        //System.out.println("Nace thread: " + Thread.currentThread().getId());
         try {
             if(!key.isValid()) return;
 
@@ -56,13 +54,18 @@ public class Worker implements Runnable{
             bb.compact();
             ((ProxyHandler)((ProxyHandler)key.attachment()).getOtherKey().attachment()).setWriteBuffer(bb);
             serverTools.queue(new QueuedKey(((ProxyHandler)key.attachment()).getOtherKey(), SelectionKey.OP_WRITE));
-            //e.printStackTrace();
+        } catch(UnresolvedAddressException e){
+            ByteBuffer bb = ByteBuffer.wrap("-ERR can't reach server.\r\n".getBytes());
+            bb.compact();
+            ((ProxyHandler)key.attachment()).setWriteBuffer(bb);
+            serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
         } catch (IOException e) {
             ProxyHandler handler = ((ProxyHandler)key.attachment());
             if(handler.isClient()){
                 if(handler.getOtherKey() != null) {
                     try {
                         handler.getOtherKey().channel().close();
+                        handler.getOtherKey().cancel();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -80,48 +83,17 @@ public class Worker implements Runnable{
             }
             key.cancel();
         }
-        //System.out.println("Muere thread: " + Thread.currentThread().getId());
     }
 
-    /*private void handleAccept(SelectionKey key) throws IOException {
-        System.out.println("---Handling Accept---");
-
-        SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
-        if (clientAndProxy == null) return;
-
-        SocketChannel proxyAndServer = SocketChannel.open();
-
-        clientAndProxy.configureBlocking(false);
-        proxyAndServer.configureBlocking(false);
-
-        proxyAndServer.connect(new InetSocketAddress("localhost", 110));
-
-        ProxyHandler handlerClient = serverTools.getNewHandler();
-        ProxyHandler handlerServer = serverTools.getNewHandler();
-        handlerClient.setClient();
-
-        //access BIEN COLOCADO ACA :V
-        stat.addAccess();
-
-        serverTools.queue(new QueuedRegister(clientAndProxy, proxyAndServer, key.selector(), handlerClient, handlerServer));
-        serverTools.queue(new QueuedKey(key, SelectionKey.OP_ACCEPT));
-    }*/
-
     private void handleAccept(SelectionKey key) throws IOException{
-        System.out.println("---Handling Accept---");
 
         SocketChannel clientAndProxy = ((ServerSocketChannel) key.channel()).accept();
         if(clientAndProxy == null) return;
 
-        //SocketChannel proxyAndServer = SocketChannel.open();
 
         clientAndProxy.configureBlocking(false);
-        //proxyAndServer.configureBlocking(false);
-
-        //proxyAndServer.connect(new InetSocketAddress("pop.fibertel.com.ar", 110));
 
         ProxyHandler handlerClient = serverTools.getNewHandler();
-        //ProxyHandler handlerServer = serverTools.getNewHandler();
 
         handlerClient.setClient();
 
@@ -139,7 +111,6 @@ public class Worker implements Runnable{
 
 
     private void handleConnect(SelectionKey key) throws IOException{
-        //System.out.println("---Handling Connect---");
 
         SocketChannel socketChannel = (SocketChannel) key.channel();
         if(socketChannel.finishConnect()){
@@ -167,7 +138,6 @@ public class Worker implements Runnable{
     }
 
     private void handleRead(SelectionKey key) throws IOException{
-        //System.out.println("---Handling Read---" + key.toString());
         ProxyHandler handler = (ProxyHandler)key.attachment();
 
         SocketChannel channel = (SocketChannel) key.channel();
@@ -185,9 +155,8 @@ public class Worker implements Runnable{
             handler.appendBuffer();
 
             if (handler.analizeData()) {
-                // handler.appendBuffer();
 
-                if (handler.transformBufferDone() && handler.getOtherKey() != null) {
+                if (handler.bufferDone() && handler.getOtherKey() != null) {
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
@@ -207,11 +176,11 @@ public class Worker implements Runnable{
                     key.cancel();
                     return;
                 }
-                if (handler.getOtherKey() != null) {
+                if (handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).getOtherKey() != null) {
                     handler.resetHandler();
                     handler.transferData();
                     serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
-                } else if (!handler.getReadyToConnect()) {
+                } else if (handler.getOtherKey() == null && !handler.getReadyToConnect()) {
                     serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
                     if(handler.getToClose()){
                         handler.setTerminated(true);
@@ -249,7 +218,6 @@ public class Worker implements Runnable{
                     port = config.getConfiguration().getPOP3port();
                 }
 
-                //falta que me fije a que servidor !!!!
                 proxyAndServer.connect(new InetSocketAddress(host, port));
                 ProxyHandler handlerServer = serverTools.getNewHandler();
 
@@ -259,20 +227,12 @@ public class Worker implements Runnable{
             if(handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).writeBufferListSize() <= 20){
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
-            else{
+            else if(handler.getOtherKey() == null){
                 serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             }
         } else {
-            //if(handler.hasWrittenData()){
-            System.out.println("-** Setting Terminated **-");
-            //handler.transferData();
             handler.terminate();
             serverTools.queue(new QueuedKey(handler.getOtherKey(), SelectionKey.OP_WRITE));
-            /*}else{
-                System.out.println("-*- Closing Channels (read) -*-");
-                handler.getOtherKey().channel().close();
-                handler.getOtherKey().cancel();
-            }*/
             channel.close();
             logger.debug("channel close OF " + key.toString());
             key.cancel();
@@ -283,7 +243,6 @@ public class Worker implements Runnable{
     }
 
     private void handleWrite(SelectionKey key) throws IOException{
-        //System.out.println("---Handling Write---" + key.toString());
         ProxyHandler handler = (ProxyHandler) key.attachment();
 
         SocketChannel channel = (SocketChannel) key.channel();
@@ -291,7 +250,6 @@ public class Worker implements Runnable{
 
         if(buffer==null){
             if(handler.isTerminated()){
-                //System.out.println("-*- Closing Channels (write) -*-");
                 logger.debug("channel close OF " + key.toString());
                 channel.close();
                 key.cancel();
@@ -305,9 +263,7 @@ public class Worker implements Runnable{
         if(handler.moreWriteableData(buffer)){
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
         }else{
-            //System.out.println("no remaining");
             if(handler.isTerminated()){
-                //System.out.println("-*- Closing Channels (write) -*-");
                 logger.debug("channel close OF " + key.toString());
                 channel.close();
                 key.cancel();
