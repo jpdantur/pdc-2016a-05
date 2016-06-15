@@ -63,7 +63,7 @@ public class PopParser {
                 state = State.SUBJECT;
                 curLine = "Subject:" + processSubject(curLine.substring(8));
             } else if (state == State.SUBJECT && (curLine.startsWith(" ") || curLine.startsWith("\t"))) {
-                curLine = processSubject(curLine) + "\r\n";
+                curLine = processSubject(curLine);
             } else if (state == State.SUBJECT) {
                 state = State.POST_SUBJECT;
             } else if (curLine.equals("\r\n") && state == State.POST_SUBJECT) {
@@ -119,7 +119,7 @@ public class PopParser {
         Matcher m = codedSubjectPattern.matcher(data);
         if (m.matches())
         {
-            return m.group(1)+toEncodedLeet(m.group(3),m.group(4),m.group(2));
+            return m.group(1)+toEncodedLeet(m.group(3),m.group(4),m.group(2))+"\r\n";
         }
         return toLeet(data);
     }
