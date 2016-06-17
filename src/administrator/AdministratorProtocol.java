@@ -7,8 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.text.DecimalFormat;
 /**
  * Created by matias on 6/5/16.
  */
@@ -29,6 +32,8 @@ public class AdministratorProtocol implements TCPProtocol {
     private boolean isLogin = false;
     private String adminPass;
     private String adminUser;
+
+    private List<XMLMultiplex> multiplexList = new ArrayList<XMLMultiplex>();
 
     private final static Logger logger = Logger.getLogger(AdministratorProtocol.class);
 
@@ -168,6 +173,16 @@ public class AdministratorProtocol implements TCPProtocol {
                     }else {
                         return ERRresp+" Login first.\r\n";
                     }
+                case "add":
+                    if(this.isLogin) {
+                        int exit = AddMultiplexUser(input);
+                        if(exit == 0) {
+                            return OKresp + "\r\n";
+                        } else if(exit == 1) {
+                            return ERRresp+" Not enough params.";
+                        }
+                    }
+
                 case "rotation":
                     if(this.isLogin) {
                         int exit = setRotation(input.replace(command+" ", ""));
@@ -240,8 +255,9 @@ public class AdministratorProtocol implements TCPProtocol {
                 "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\r\n" +
                 "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\r\n" +
                 "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\r\n" +
-                "BYTES TRANSFERRED: " + humanReadableByteCount(stat.getBytesTransferred(), true) + "\r\n" +
-                "ACCESS: " + stat.getAccesses() +
+                "BYTES TRANSFERRED: " + readableFileSize(stat.getBytesTransferred()) + "\r\n" +
+                "ACCESS: " + stat.getAccesses() + "\r\n" +
+                "USERS ADDED:\r\n" + multiplexListToString() +
                 "\r\n.\r\n";
     }
 
@@ -266,11 +282,58 @@ public class AdministratorProtocol implements TCPProtocol {
 //    }
 
     //convtierte el tamano de los bytes en un formato leible
-    public static String humanReadableByteCount(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    //Agrega un nuevo usuario. Este usuario se almacena en memoria.
+    public int AddMultiplexUser(String input) {
+        String pattern = "[A-Z|a-z|0-9]+(\\s|\\t)+[A-Z|a-z|0-9|\\.]+(\\s|\\t)+\\d+";
+        Pattern r = Pattern.compile(pattern);
+        String command = "add ";
+        input = input.replace("\r\n", "").replace("\n", "").replace(command,"");
+        Matcher m = r.matcher(input);
+
+        String user;
+        String host;
+        String port;
+
+        if(m.find()) {
+            String[] values = input.replaceAll("(\\s|\\t)+"," ").split(" ");
+            user = values[0];
+            host = values[1];
+            port = values[2];
+            XMLMultiplex mx = new XMLMultiplex(user,host,port);
+            multiplexList.add(mx);
+            config.insertUser(mx);
+            logger.info("[USER: "+ user +" HOST:"+ host +" PORT: "+ port + "] added.");
+            return 0;
+        } else {
+          return 1;
+        }
+    }
+
+    public List<XMLMultiplex> getMultiplexList() {
+        return multiplexList;
+    }
+
+    public String multiplexListToString() {
+        String out = "";
+        int i = 0;
+
+        if(multiplexList.size() == 0)
+            out = "No users added";
+        else {
+            for(; i < multiplexList.size() - 1; i++) {
+                out += multiplexList.get(i).getUser()+"\r\n";
+            }
+
+            out += multiplexList.get(i).getUser();
+        }
+
+        return out;
     }
 }

@@ -22,4 +22,8 @@ public class Configuration {
         return Configuration.XMLConfiguration;
     }
 
+    public void insertUser(XMLMultiplex u){
+        XMLConfiguration.getMultiplexConfig().get(0).getMultiplexConfig().add(u);
+        JAXBParser.insertConfiguration(XMLConfiguration);
+    }
 }

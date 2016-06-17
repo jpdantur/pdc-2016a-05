@@ -38,4 +38,13 @@ public class XMLMultiplex {
 
     public String getHost() { return this.host; }
 
+    public XMLMultiplex(){
+
+    }
+
+    public XMLMultiplex(String user, String host, String port) {
+        this.user = user;
+        this.host = host;
+        this.port = Integer.valueOf(port);
+    }
 }
