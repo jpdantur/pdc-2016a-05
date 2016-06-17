@@ -30,18 +30,18 @@ public class JAXBParser {
     }
 
 
-    public static void insertConfiguration(XMLConfiguration xmlc) {
+    public static void updateConfiguration(XMLConfiguration xmlc) {
         try {
 
             File file = new File("./Configuration.xml");
-            JAXBContext jaxbContext = JAXBContext.newInstance(XMLMultiplex.class);
+            file.delete();
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLConfiguration.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
             // output pretty printed
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
             jaxbMarshaller.marshal(xmlc, file);
-            jaxbMarshaller.marshal(xmlc, System.out);
 
         } catch (JAXBException e) {
             e.printStackTrace();

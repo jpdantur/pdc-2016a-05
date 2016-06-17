@@ -1,42 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Configuration>
-    <BufferSize>1024</BufferSize>
     <ServerPort>7070</ServerPort>
     <pop3Port>110</pop3Port>
     <Servername>localhost</Servername>
-    <L33t>false</L33t>
+    <BufferSize>1024</BufferSize>
     <Rotation>false</Rotation>
-    <Admin>
-        <user>admin</user>
-        <pass>1234</pass>
-        <port>9999</port>
-    </Admin>
+    <L33t>false</L33t>
     <WellcomeMessage>ProxyPOP3 ready.</WellcomeMessage>
     <GoodByeMessage>ProxyPOP3 says goodbye.</GoodByeMessage>
+    <Admin>
+        <pass>1234</pass>
+        <port>9999</port>
+        <user>admin</user>
+    </Admin>
     <Multiplexing-config>
         <Multiplex>
-            <User>user</User>
             <Host>host</Host>
             <Port>1111</Port>
+            <User>user</User>
         </Multiplex>
         <Multiplex>
-            <User>user2</User>
             <Host>host</Host>
             <Port>2222</Port>
+            <User>user2</User>
         </Multiplex>
         <Multiplex>
-            <User>user3</User>
-            <Host>host</Host>
-            <Port>3333</Port>
-        </Multiplex>
-        <Multiplex>
-            <User>jose</User>
             <Host>localhost</Host>
             <Port>110</Port>
+            <User>jose</User>
         </Multiplex>
         <Multiplex>
-            <User>jpdantur</User>
             <Host>pop.fibertel.com.ar</Host>
             <Port>110</Port>
+            <User>jpdantur</User>
         </Multiplex>
     </Multiplexing-config>
 </Configuration>

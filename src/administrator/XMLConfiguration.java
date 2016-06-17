@@ -2,12 +2,15 @@ package administrator;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
  * Created by matias on 6/11/16.
  */
 @XmlRootElement(name="Configuration")
+@XmlType(name="", propOrder = {"serverPort","POP3port","servername","bufferSize","rotation","leet","wellcome",
+        "gbyeMsg", "admin","multiplexConfig"})
 public class XMLConfiguration {
     private int bufferSize;
     private int serverPort;

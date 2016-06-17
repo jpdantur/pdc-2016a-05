@@ -19,4 +19,21 @@ public class XMLMultiplex_config {
     public void setMultiplexConfig(List<XMLMultiplex> multiplexList) {
         this.multiplexList = multiplexList;
     }
+
+    public String toString() {
+        String out = "";
+        int i = 0;
+
+        if(multiplexList.size() == 0) {
+            out = "No users for multiplexing from start";
+        } else {
+            for(; i < multiplexList.size() -1; i++) {
+                out += multiplexList.get(i).getUser() + "\r\n";
+            }
+
+            out += multiplexList.get(i);
+        }
+
+        return out;
+    }
 }

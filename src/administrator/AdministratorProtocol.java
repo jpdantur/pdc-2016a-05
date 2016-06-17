@@ -30,8 +30,6 @@ public class AdministratorProtocol implements TCPProtocol {
     private static String login = "+Logged in\r\n";
     private boolean showWellcomeMsg = true;
     private boolean isLogin = false;
-    private String adminPass;
-    private String adminUser;
 
     private List<XMLMultiplex> multiplexList = new ArrayList<XMLMultiplex>();
 
@@ -179,10 +177,20 @@ public class AdministratorProtocol implements TCPProtocol {
                         if(exit == 0) {
                             return OKresp + "\r\n";
                         } else if(exit == 1) {
-                            return ERRresp+" Not enough params.";
+                            return ERRresp+" Invalid input.\r\n";
                         }
                     }
-
+                case "remove":
+                    if(this.isLogin) {
+                        int exit = removeMultiplexUser(input);
+                        if(exit == 0) {
+                            return OKresp + "\r\n";
+                        } else if(exit == 1) {
+                            return ERRresp+" Not enough params.\r\n";
+                        } else if(exit == 2) {
+                            return ERRresp+" User not found.\r\n";
+                        }
+                    }
                 case "rotation":
                     if(this.isLogin) {
                         int exit = setRotation(input.replace(command+" ", ""));
@@ -257,7 +265,7 @@ public class AdministratorProtocol implements TCPProtocol {
                 "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\r\n" +
                 "BYTES TRANSFERRED: " + readableFileSize(stat.getBytesTransferred()) + "\r\n" +
                 "ACCESS: " + stat.getAccesses() + "\r\n" +
-                "USERS ADDED:\r\n" + multiplexListToString() +
+                "MULTIPLEXING USERS:\r\n" + multiplexListToString() +
                 "\r\n.\r\n";
     }
 
@@ -274,6 +282,8 @@ public class AdministratorProtocol implements TCPProtocol {
             return "COMMANDS:\r\n" +
                     "LEET\r\n" +
                     "ROTATION\r\n" +
+                    "ADD\r\n" +
+                    "REMOVE\r\n" +
                     "STAT\r\n.\r\n";
     }
 
@@ -307,7 +317,6 @@ public class AdministratorProtocol implements TCPProtocol {
             host = values[1];
             port = values[2];
             XMLMultiplex mx = new XMLMultiplex(user,host,port);
-            multiplexList.add(mx);
             config.insertUser(mx);
             logger.info("[USER: "+ user +" HOST:"+ host +" PORT: "+ port + "] added.");
             return 0;
@@ -316,24 +325,52 @@ public class AdministratorProtocol implements TCPProtocol {
         }
     }
 
-    public List<XMLMultiplex> getMultiplexList() {
-        return multiplexList;
-    }
+    public int removeMultiplexUser(String input) {
+        String pattern = "[A-Z|a-z|0-9]+";
+        Pattern r = Pattern.compile(pattern);
+        String command = "remove ";
+        input = input.replace("\r\n", "").replace("\n", "").replace(command,"");
+        Matcher m = r.matcher(input);
+        List<XMLMultiplex> aList = config.getConfiguration().getMultiplexConfig().get(0).getMultiplexConfig();
 
-    public String multiplexListToString() {
-        String out = "";
-        int i = 0;
+        String user;
+        int idx = 0;
+        boolean found = false;
 
-        if(multiplexList.size() == 0)
-            out = "No users added";
-        else {
-            for(; i < multiplexList.size() - 1; i++) {
-                out += multiplexList.get(i).getUser()+"\r\n";
+        if(m.find()) {
+            user = m.group();
+            for(; idx < aList.size() && !found; idx++) {
+                if(aList.get(idx).getUser().equals(user)) {
+                    found = true;
+                }
             }
 
-            out += multiplexList.get(i).getUser();
+            if(found) {
+                aList.remove(idx -1);
+                config.updateUser();
+                logger.info("USER " + user + " removed.");
+                return 0;
+            }else {
+                return 2;
+            }
+        } else {
+            return 1;
         }
+    }
 
+    private String multiplexListToString() {
+        String out = "";
+        int i = 0;
+        List<XMLMultiplex> aList = config.getConfiguration().getMultiplexConfig().get(0).getMultiplexConfig();
+
+        if(aList == null || aList.size() == 0)
+            out = "No users added";
+        else {
+            for(; i < aList.size() - 1; i++) {
+                out += aList.get(i).getUser()+"\r\n";
+            }
+            out += aList.get(i).getUser();
+        }
         return out;
     }
 }
