@@ -5,8 +5,6 @@ import pop3.PopHandlerBuilder;
 import proxy.server.ProxyServer;
 import java.io.IOException;
 
-import static java.util.Base64.getMimeDecoder;
-
 /**
  * Created by root on 5/27/16.
  */

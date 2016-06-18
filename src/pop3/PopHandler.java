@@ -104,6 +104,18 @@ public class PopHandler extends SimpleProxyHandler {
                 bb.compact();
                 ((PopHandler)this.getOtherHandler()).setWriteBuffer(bb);
             }
+            else if(serverResponses == 1 && s.charAt(0) == '+'){
+                String user = ((PopHandler)this.getOtherHandler()).getUser();
+                ByteBuffer bbUser = ByteBuffer.wrap(("user " + user + "\r\n").getBytes());
+                bbUser.compact();
+                this.setWriteBuffer(bbUser);
+            }
+            else if(serverResponses == 2 && s.charAt(0) == '+'){
+                String pass = ((PopHandler)this.getOtherHandler()).getPass();
+                ByteBuffer bbPass = ByteBuffer.wrap(("pass " + pass + "\r\n").getBytes());
+                bbPass.compact();
+                this.setWriteBuffer(bbPass);
+            }
             else if(s.charAt(0)=='+' && serverResponses == 3){
                 this.setFinishConnect(true);
             }

@@ -116,7 +116,7 @@ public class Worker implements Runnable{
         if(socketChannel.finishConnect()){
             ProxyHandler handler = ((ProxyHandler)key.attachment());
             SelectionKey otherKey = handler.getOtherKey();
-            ProxyHandler otherHandler = ((ProxyHandler)otherKey.attachment());
+            /*ProxyHandler otherHandler = ((ProxyHandler)otherKey.attachment());
             String user = otherHandler.getUser();
             String pass = otherHandler.getPass();
 
@@ -126,11 +126,11 @@ public class Worker implements Runnable{
 
             ByteBuffer bbPass = ByteBuffer.wrap(("pass " + pass + "\r\n").getBytes());
             bbPass.compact();
-            handler.setWriteBuffer(bbPass);
+            handler.setWriteBuffer(bbPass);*/
 
 
 
-            serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
+            serverTools.queue(new QueuedKey(key, SelectionKey.OP_READ));
             serverTools.queue(new QueuedKey(otherKey, SelectionKey.OP_READ));
         }else{
             serverTools.queue(new QueuedKey(key, SelectionKey.OP_CONNECT));
@@ -185,6 +185,9 @@ public class Worker implements Runnable{
                     if(handler.getToClose()){
                         handler.setTerminated(true);
                     }
+                    return;
+                } else if(handler.getOtherKey() != null && ((ProxyHandler)handler.getOtherKey().attachment()).getOtherKey() == null){
+                    serverTools.queue(new QueuedKey(key, SelectionKey.OP_WRITE));
                     return;
                 }
             }
