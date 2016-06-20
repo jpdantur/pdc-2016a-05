@@ -176,6 +176,10 @@ public class AdministratorProtocol implements TCPProtocol {
                         int exit = AddMultiplexUser(input);
                         if(exit == 0) {
                             return OKresp + "\r\n";
+                        } else if (exit == 2) {
+                            return ERRresp + " User already exists.\r\n";
+                        } else  if ( exit == 3) {
+                            return  ERRresp + " Default host and port can't be used.\r\n";
                         } else if(exit == 1) {
                             return ERRresp+" Invalid input.\r\n";
                         }
@@ -316,6 +320,21 @@ public class AdministratorProtocol implements TCPProtocol {
             user = values[0];
             host = values[1];
             port = values[2];
+
+            List<XMLMultiplex> mList = config.getConfiguration().getMultiplexConfig().get(0).getMultiplexConfig();
+
+            for(XMLMultiplex mpx: mList) {
+                if(user.equals(mpx.getUser())){
+                    logger.info("USER " + user + " can't be added. Already exists.");
+                    return 2;
+                }
+                if (host.equals(config.getConfiguration().getServername()) &&
+                        Integer.valueOf(port) == config.getConfiguration().getServerPort()) {
+                    logger.info("HOST " + user + " and PORT " + host + " are default values.");
+                    return 3;
+                }
+            }
+
             XMLMultiplex mx = new XMLMultiplex(user,host,port);
             config.insertUser(mx);
             logger.info("[USER: "+ user +" HOST:"+ host +" PORT: "+ port + "] added.");
