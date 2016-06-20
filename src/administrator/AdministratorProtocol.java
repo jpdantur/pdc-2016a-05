@@ -267,7 +267,7 @@ public class AdministratorProtocol implements TCPProtocol {
                 "ROTATION: " + (this.config.getConfiguration().getRotation() ? "yes" : "no" ) + "\r\n" +
                 "ADMINISTRATOR PORT: " + this.config.getConfiguration().getAdmin().get(0).getPort() + "\r\n" +
                 "PROXY PORT: " + this.config.getConfiguration().getServerPort() + "\r\n" +
-                "BYTES TRANSFERRED: " + readableFileSize(stat.getBytesTransferred()) + "\r\n" +
+                "BYTES TRANSFERRED: " + stat.getBytesTransferred() + " bytes\r\n" +
                 "ACCESS: " + stat.getAccesses() + "\r\n" +
                 "MULTIPLEXING USERS:\r\n" + multiplexListToString() +
                 "\r\n.\r\n";
@@ -296,12 +296,12 @@ public class AdministratorProtocol implements TCPProtocol {
 //    }
 
     //convtierte el tamano de los bytes en un formato leible
-    public static String readableFileSize(long size) {
-        if(size <= 0) return "0";
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
-        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
+//    public static String readableFileSize(long size) {
+//        if(size <= 0) return "0";
+//        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+//        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+//        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+//    }
 
     //Agrega un nuevo usuario. Este usuario se almacena en memoria.
     public int AddMultiplexUser(String input) {
@@ -324,6 +324,7 @@ public class AdministratorProtocol implements TCPProtocol {
             List<XMLMultiplex> mList = config.getConfiguration().getMultiplexConfig().get(0).getMultiplexConfig();
 
             for(XMLMultiplex mpx: mList) {
+
                 if(user.equals(mpx.getUser())){
                     logger.info("USER " + user + " can't be added. Already exists.");
                     return 2;
