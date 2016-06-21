@@ -10,6 +10,13 @@ Jose Angel Vitali
 Leandro Matias Rivas
 
 ------------------------------------------------------------------------
+
+Compilación
+
+Basta llamar al comando ant en la terminal, estando ubicado en pdc-2016-a-05
+
+------------------------------------------------------------------------
+
 Ejecución
 
 Para correr el proxy se debe ejecutar java -jar con el path de "ProtosTpe.jar".
