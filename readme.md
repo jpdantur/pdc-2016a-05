@@ -13,7 +13,7 @@ Leandro Matias Rivas
 
 Compilación
 
-Basta llamar al comando ant en la terminal, estando ubicado en pdc-2016-a-05
+Basta llamar al comando ant en la terminal, estando ubicado en pdc-2016-a-05. De no existir el directorio "bin" crearlo.
 
 ------------------------------------------------------------------------
 
